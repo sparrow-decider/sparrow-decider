@@ -1,0 +1,15 @@
+{
+ "model": "sparrow-nano-v16k",
+ "bench": "robotbench_v0.jsonl",
+ "right": 42,
+ "n": 55,
+ "acc": 0.764,
+ "per_family": {
+  "check": "9/12",
+  "nav": "9/10",
+  "recover": "7/10",
+  "skill": "13/15",
+  "urgency": "4/8"
+ },
+ "p50_ms": 0.27
+}

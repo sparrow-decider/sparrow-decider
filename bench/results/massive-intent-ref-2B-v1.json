@@ -1,0 +1,12 @@
+{
+ "model": "strands-decider-2B-qwen3.5-v1-2610 (public)",
+ "bench": "massive_intent.jsonl",
+ "right": 474,
+ "n": 544,
+ "acc": 0.871,
+ "per_family": {
+  "intent": "474/544"
+ },
+ "sec_per_q": 0.168,
+ "device": "mps"
+}

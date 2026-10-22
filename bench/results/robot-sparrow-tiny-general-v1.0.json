@@ -1,0 +1,15 @@
+{
+ "model": "sparrow-tiny-general-v1.0",
+ "bench": "robotbench_v0.jsonl",
+ "right": 20,
+ "n": 55,
+ "acc": 0.364,
+ "per_family": {
+  "check": "6/12",
+  "nav": "2/10",
+  "recover": "3/10",
+  "skill": "7/15",
+  "urgency": "2/8"
+ },
+ "p50_ms": 19.81
+}

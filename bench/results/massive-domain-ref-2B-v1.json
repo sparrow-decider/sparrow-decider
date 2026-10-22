@@ -1,0 +1,12 @@
+{
+ "model": "strands-decider-2B-qwen3.5-v1-2610 (public)",
+ "bench": "massive_domain.jsonl",
+ "right": 516,
+ "n": 600,
+ "acc": 0.86,
+ "per_family": {
+  "domain": "516/600"
+ },
+ "sec_per_q": 0.375,
+ "device": "mps"
+}

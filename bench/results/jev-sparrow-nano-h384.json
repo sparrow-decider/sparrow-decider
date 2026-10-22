@@ -1,0 +1,22 @@
+{
+ "model": "sparrow-nano-h384.sparrow",
+ "file_mb": 1.59,
+ "load_s": 0.01,
+ "threads": 1,
+ "jevbench": {
+  "intelligence": -11.9,
+  "per_kind": {
+   "noul": -91.9,
+   "choice": 29.6,
+   "score": 26.5
+  },
+  "right": 113,
+  "n": 231
+ },
+ "latency_ms": {
+  "p50": 0.69,
+  "p95": 9.17,
+  "mean": 2.05
+ },
+ "peak_rss_mb": 63.6
+}

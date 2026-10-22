@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-micro-general-v1.0",
+ "bench": "massive_domain.jsonl",
+ "right": 308,
+ "n": 600,
+ "acc": 0.513,
+ "per_family": {
+  "domain": "308/600"
+ },
+ "p50_ms": 0.84
+}

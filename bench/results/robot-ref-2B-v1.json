@@ -1,0 +1,16 @@
+{
+ "model": "strands-decider-2B-qwen3.5-v1-2610 (public)",
+ "bench": "robotbench_v0.jsonl",
+ "right": 40,
+ "n": 55,
+ "acc": 0.727,
+ "per_family": {
+  "check": "10/12",
+  "nav": "3/10",
+  "recover": "10/10",
+  "skill": "15/15",
+  "urgency": "2/8"
+ },
+ "sec_per_q": 0.202,
+ "device": "mps"
+}

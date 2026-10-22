@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.DS_Store
+# training workspace
+corpus/
+runs/
+logs/
+work/
+ext/
+release/
+# C / ESP-IDF build outputs
+c/build/
+c/examples/*/build/
+c/examples/*/sdkconfig
+c/examples/*/sdkconfig.old
+c/examples/*/managed_components/
+c/examples/*/main/model.spb
+c/examples/*/dependencies.lock

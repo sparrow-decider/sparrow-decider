@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparrow-decider"
+version = "0.1.0"
+description = "Decision models from 47 MB down to a few KB: yes/no, pick-one and score questions in milliseconds on CPU and microcontrollers. numpy only."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Vivek Raja P S" }]
+keywords = ["decision model", "classifier", "agents", "robotics", "tinyml", "embedded", "esp32", "strands"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["numpy>=1.22"]
+
+[project.optional-dependencies]
+fast = ["regex"]
+dev = ["pytest"]
+train = ["torch>=2.4", "transformers>=4.46", "huggingface_hub", "model2vec", "pyarrow"]
+
+[project.urls]
+Homepage = "https://github.com/sparrow-decider/sparrow-decider"
+Documentation = "https://github.com/sparrow-decider/sparrow-decider/tree/main/docs"
+Changelog = "https://github.com/sparrow-decider/sparrow-decider/blob/main/CHANGELOG.md"
+
+[project.scripts]
+sparrow-decider = "sparrow_decider.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "python" }
+packages = ["sparrow_decider"]
+
+[tool.setuptools.package-data]
+sparrow_decider = ["models/*.sparrow"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

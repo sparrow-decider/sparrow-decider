@@ -1,0 +1,20 @@
+{
+  "name": "rover",
+  "context": "stop if anything is closer than 0.4 m; go back to the dock when battery is below 15%; slow down in crowded areas or on a wet floor; re-plan when the path is blocked; otherwise keep going.",
+  "features": [
+    {"name": "battery", "type": "number", "min": 0, "max": 100, "unit": "%"},
+    {"name": "front_obstacle_m", "type": "number", "min": 0, "max": 8},
+    {"name": "goal_m", "type": "number", "min": 0, "max": 60},
+    {"name": "path", "type": "enum", "values": ["clear", "blocked", "crowded", "wet floor"]},
+    {"name": "carrying_load", "type": "bool"}
+  ],
+  "questions": {
+    "action": {"type": "choice", "instructions": "What should the robot do next?",
+               "criteria": {"continue": "keep driving toward the goal", "slow": "reduce speed and keep going",
+                            "stop": "halt immediately", "dock": "go back to the charging dock",
+                            "replan": "plan a new route"}},
+    "need_charge": {"type": "noul", "instructions": "Does the robot need to recharge now?"},
+    "risk": {"type": "score", "instructions": "How risky is the robot's situation?",
+             "criteria": ["safe", "minor risk", "high risk", "danger"]}
+  }
+}

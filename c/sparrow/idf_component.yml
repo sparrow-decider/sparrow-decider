@@ -1,0 +1,6 @@
+version: "0.1.0"
+description: "Sparrow Decider: few-hundred-KB decision models (yes/no, pick-one, score) for microcontrollers. Unofficial community project."
+url: "https://github.com/sparrow-decider/sparrow-decider"
+license: "Apache-2.0"
+dependencies:
+  idf: ">=5.1"

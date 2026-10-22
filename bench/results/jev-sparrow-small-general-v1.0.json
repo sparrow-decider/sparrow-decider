@@ -1,0 +1,22 @@
+{
+ "model": "sparrow-small-general-v1.0.sparrow",
+ "file_mb": 46.97,
+ "load_s": 0.17,
+ "threads": 1,
+ "jevbench": {
+  "intelligence": -4.7,
+  "per_kind": {
+   "noul": -89.2,
+   "choice": 41.0,
+   "score": 34.0
+  },
+  "right": 122,
+  "n": 231
+ },
+ "latency_ms": {
+  "p50": 64.17,
+  "p95": 328.14,
+  "mean": 151.93
+ },
+ "peak_rss_mb": 948.6
+}

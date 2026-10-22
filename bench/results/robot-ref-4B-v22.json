@@ -1,0 +1,16 @@
+{
+ "model": "strands-decider-4B-hobson-v22",
+ "bench": "robotbench_v0.jsonl",
+ "right": 46,
+ "n": 55,
+ "acc": 0.836,
+ "per_family": {
+  "check": "10/12",
+  "nav": "6/10",
+  "recover": "10/10",
+  "skill": "14/15",
+  "urgency": "6/8"
+ },
+ "sec_per_q": 0.564,
+ "device": "mps"
+}

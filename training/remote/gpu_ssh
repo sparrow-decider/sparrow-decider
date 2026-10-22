@@ -1,0 +1,4 @@
+#!/bin/sh
+# ssh into a rented GPU box: GPU_HOST=root@1.2.3.4 GPU_PORT=22 training/remote/gpu_ssh CMD
+exec ssh -i "${GPU_SSH_KEY:-$HOME/.ssh/id_ed25519}" -o StrictHostKeyChecking=no -o ConnectTimeout=20 \
+  -o ServerAliveInterval=30 -p "${GPU_PORT:-22}" "$GPU_HOST" "$@"

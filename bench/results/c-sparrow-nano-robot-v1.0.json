@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-nano-robot-v1.0",
+ "bench": "c-parity",
+ "cflags": "-O3 -ffast-math",
+ "blob_mb": 1.601,
+ "cases": 586,
+ "max_abs_diff": 3e-06,
+ "mean_abs_diff": 5e-07,
+ "argmax_agree": "586/586",
+ "c_us_p50": 122.0
+}

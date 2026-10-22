@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-micro-nokv",
+ "bench": "c-parity",
+ "cflags": "-O3 -ffast-math",
+ "blob_mb": 8.881,
+ "cases": 586,
+ "max_abs_diff": 6e-06,
+ "mean_abs_diff": 5e-07,
+ "argmax_agree": "586/586",
+ "c_us_p50": 218.0
+}

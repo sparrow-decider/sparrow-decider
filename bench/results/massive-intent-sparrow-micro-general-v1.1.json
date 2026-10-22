@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-micro-general-v1.1",
+ "bench": "massive_intent.jsonl",
+ "right": 295,
+ "n": 544,
+ "acc": 0.542,
+ "per_family": {
+  "intent": "295/544"
+ },
+ "p50_ms": 0.33
+}

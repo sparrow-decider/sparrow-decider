@@ -1,0 +1,22 @@
+{
+ "model": "sparrow-micro-nokv.sparrow",
+ "file_mb": 7.6,
+ "load_s": 0.03,
+ "threads": 1,
+ "jevbench": {
+  "intelligence": -7.9,
+  "per_kind": {
+   "noul": -100.0,
+   "choice": 28.8,
+   "score": 47.4
+  },
+  "right": 109,
+  "n": 231
+ },
+ "latency_ms": {
+  "p50": 0.52,
+  "p95": 5.17,
+  "mean": 1.35
+ },
+ "peak_rss_mb": 81.7
+}

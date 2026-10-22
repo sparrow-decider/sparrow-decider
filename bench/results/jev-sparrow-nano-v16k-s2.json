@@ -1,0 +1,22 @@
+{
+ "model": "sparrow-nano-v16k-s2.sparrow",
+ "file_mb": 2.44,
+ "load_s": 0.01,
+ "threads": 1,
+ "jevbench": {
+  "intelligence": -4.0,
+  "per_kind": {
+   "noul": -86.5,
+   "choice": 28.0,
+   "score": 46.5
+  },
+  "right": 107,
+  "n": 231
+ },
+ "latency_ms": {
+  "p50": 0.58,
+  "p95": 8.65,
+  "mean": 1.89
+ },
+ "peak_rss_mb": 65.3
+}

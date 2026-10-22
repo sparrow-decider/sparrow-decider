@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use Sparrow Decider, please cite it."
+title: "Sparrow Decider: decision models from 47 MB down to a few KB"
+authors:
+  - family-names: "Raja P S"
+    given-names: "Vivek"
+license: Apache-2.0
+repository-code: "https://github.com/sparrow-decider/sparrow-decider"
+version: "0.1.0"
+date-released: "2026-10-22"

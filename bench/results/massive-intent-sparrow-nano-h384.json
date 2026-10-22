@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-nano-h384",
+ "bench": "massive_intent.jsonl",
+ "right": 299,
+ "n": 544,
+ "acc": 0.55,
+ "per_family": {
+  "intent": "299/544"
+ },
+ "p50_ms": 0.33
+}

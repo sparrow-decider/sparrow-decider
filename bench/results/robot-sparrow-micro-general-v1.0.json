@@ -1,0 +1,15 @@
+{
+ "model": "sparrow-micro-general-v1.0",
+ "bench": "robotbench_v0.jsonl",
+ "right": 22,
+ "n": 55,
+ "acc": 0.4,
+ "per_family": {
+  "check": "5/12",
+  "nav": "3/10",
+  "recover": "2/10",
+  "skill": "9/15",
+  "urgency": "3/8"
+ },
+ "p50_ms": 0.51
+}

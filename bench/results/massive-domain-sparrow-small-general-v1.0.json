@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-small-general-v1.0",
+ "bench": "massive_domain.jsonl",
+ "right": 404,
+ "n": 600,
+ "acc": 0.673,
+ "per_family": {
+  "domain": "404/600"
+ },
+ "p50_ms": 132.82
+}

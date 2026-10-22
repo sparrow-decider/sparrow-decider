@@ -1,0 +1,14 @@
+Sparrow Decider
+Copyright 2026 Vivek Raja P S. Code licensed under Apache-2.0 (see LICENSE).
+
+Some Sparrow Decider model weights are fine-tuned from third-party weights released under the MIT licence:
+
+- sparrow-micro: potion-base-8M / Model2Vec, Copyright (c) MinishLab. https://github.com/MinishLab/model2vec
+- sparrow-tiny, sparrow-small: Ettin encoders, Copyright (c) Johns Hopkins University CLSP. https://huggingface.co/jhu-clsp
+
+Their MIT notices apply to the corresponding weights.
+
+Unofficial community project. Not an AWS or Strands product.
+
+bench/massive/*.jsonl are derived from Amazon MASSIVE 1.1 (en-US test split), Copyright Amazon.com,
+Inc. or its affiliates, licensed CC BY 4.0. https://github.com/alexa/massive

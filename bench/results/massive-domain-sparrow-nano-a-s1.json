@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-nano-a-s1",
+ "bench": "massive_domain.jsonl",
+ "right": 312,
+ "n": 600,
+ "acc": 0.52,
+ "per_family": {
+  "domain": "312/600"
+ },
+ "p50_ms": 0.65
+}
