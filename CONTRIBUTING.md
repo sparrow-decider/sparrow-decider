@@ -1,6 +1,6 @@
 # Contributing
 
-Issues and pull requests are welcome.
+Issues and pull requests are welcome. For anything private (security reports, partnerships, press), email [vivek@sparrowdecider.com](mailto:vivek@sparrowdecider.com).
 
 ```bash
 git clone https://github.com/sparrow-decider/sparrow-decider && cd sparrow-decider

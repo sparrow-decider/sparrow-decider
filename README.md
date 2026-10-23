@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="site/brand/og-image.svg" alt="Sparrow Decider: decisions that fit on a chip. 9.3 µs per decision on an ESP32-S3." width="100%">
+  <img src="https://raw.githubusercontent.com/sparrow-decider/sparrow-decider/main/site/brand/previews/og-image.png" alt="Sparrow Decider: decisions that fit on a chip. 9.3 µs per decision on an ESP32-S3." width="100%">
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
+  <a href="https://github.com/sparrow-decider/sparrow-decider/tree/main/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
   <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="numpy only" src="https://img.shields.io/badge/deps-numpy%20only-f59e0b">
   <img alt="C99, no malloc" src="https://img.shields.io/badge/C99-no%20malloc-555">
@@ -14,8 +14,8 @@
   <a href="#quickstart">Quickstart</a> ·
   <a href="#the-family">Models</a> ·
   <a href="#benchmarks">Benchmarks</a> ·
-  <a href="docs/quickstart">Guides</a> ·
-  <a href="research/REPORT.md">Research report</a>
+  <a href="https://github.com/sparrow-decider/sparrow-decider/tree/main/docs/quickstart">Guides</a> ·
+  <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/research/REPORT.md">Research report</a>
 </p>
 
 ---
@@ -44,19 +44,20 @@ answer    dock                        9.3 µs on a $10 ESP32-S3 (sparrow-pico)
 ## Quickstart
 
 ```bash
-pip install sparrow-decider          # numpy only, 1.4 MB installed, two models bundled
+pip install sparrow-decider          # numpy only, 3.3 MB installed, two models bundled
 ```
 
 ```python
 from sparrow_decider import Decider
 
 d = Decider.load()                                  # sparrow-nano-general-v1.1
-d.ask("User: I was charged twice for order 1182", {
-    "intent":  {"type": "choice", "instructions": "What does the user want?",
-                "criteria": {"refund": "money back", "cancel": "stop an order", "status": "where is my order"}},
+d.ask("User: I was charged twice for order 1182, I want my money back", {
+    "tool":    {"type": "choice", "instructions": "Which tool fits this request?",
+                "criteria": {"flights": "search and book flights", "refunds": "refund a payment",
+                             "weather": "forecasts for a city", "calendar": "create or move meetings"}},
     "upset":   {"type": "noul",   "instructions": "Is the user upset?"},
     "urgency": {"type": "score",  "instructions": "How urgent is this?", "criteria": ["can wait", "today", "now"]},
-})
+})                                                  # tool -> refunds (p = 0.98)
 ```
 
 ```bash
@@ -67,11 +68,11 @@ sparrow-decider serve --port 8000                   # POST /v1/systemone
 
 | Guide | |
 |---|---|
-| [Python](docs/quickstart/python.md) | API, models, CLI, HTTP server |
-| [Agents](docs/quickstart/agents.md) | routing and gating inside an agent, including as a Strands tool |
-| [ESP32-S3](docs/quickstart/esp32.md) | text decisions on a microcontroller in 3.5-7.6 ms, plus QEMU if you have no board |
-| [sparrow-pico](docs/quickstart/pico.md) | compile a decision for your device into a few KB of C |
-| [C library](docs/quickstart/c.md) | the runtime anywhere a C99 compiler runs |
+| [Python](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/python.md) | API, models, CLI, HTTP server |
+| [Agents](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/agents.md) | routing and gating inside an agent, including as a Strands tool |
+| [ESP32-S3](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/esp32.md) | text decisions on a microcontroller in 3.5-7.6 ms, plus QEMU if you have no board |
+| [sparrow-pico](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/pico.md) | compile a decision for your device into a few KB of C |
+| [C library](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/c.md) | the runtime anywhere a C99 compiler runs |
 
 ## The family
 
@@ -86,7 +87,7 @@ sparrow-decider serve --port 8000                   # POST /v1/systemone
 
 <sub>Times are p50 on one Apple M4 Pro core: the C runtime for pico, nano and micro, numpy for tiny and
 small. The nanos are bundled with the Python package; the others are on the
-<a href="../../releases">releases page</a>. IDs follow <a href="NAMING.md">NAMING.md</a>.</sub>
+<a href="https://github.com/sparrow-decider/sparrow-decider/releases">releases page</a>. IDs follow <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/NAMING.md">NAMING.md</a>.</sub>
 
 ### pico or nano?
 
@@ -122,16 +123,16 @@ devices use both: pico in the control loop, nano for anything said or written.
 <b>RobotBench v0:</b> written by hand, separately from the robot training generator.
 <b>MASSIVE:</b> Amazon MASSIVE 1.1 en-US test, 600 utterances, never trained on.
 <b>JevBench:</b> local v1.5 proxy, not leaderboard scores; the 4B and 2B JevBench numbers are earlier local runs.
-Full tables, ablations and C parity are in <a href="bench/RESULTS.md">bench/RESULTS.md</a>.
+Full tables, ablations and C parity are in <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/bench/RESULTS.md">bench/RESULTS.md</a>.
 </sub>
 
-**sparrow-pico**, compiled from the public 2B for the [rover spec](c/examples/specs/rover.json) and
+**sparrow-pico**, compiled from the public 2B for the [rover spec](https://github.com/sparrow-decider/sparrow-decider/blob/main/c/examples/specs/rover.json) and
 tested on 600 held-out states:
 
 | Question | pico vs teacher | Teacher vs the spec's rules | pico vs the spec's rules |
 |---|--:|--:|--:|
-| next action (5 options) | 98.2% | 94.2% | **94.3%** |
-| needs charging (yes/no) | 99.2% | 99.0% | **99.8%** |
+| next action (5 options) | 97.7% | 94.2% | **94.0%** |
+| needs charging (yes/no) | 99.8% | 99.0% | **99.2%** |
 
 ### On a real ESP32-S3
 
@@ -184,7 +185,7 @@ flowchart LR
 - **Encoder tiers (tiny, small):** Ettin encoders with a pointer head over the options.
 - **pico:** distillation into a per-question MLP over the raw feature vector.
 
-Methods, ablations and limits are in the [research report](research/REPORT.md).
+Methods, ablations and limits are in the [research report](https://github.com/sparrow-decider/sparrow-decider/blob/main/research/REPORT.md).
 
 ## Repository
 
@@ -210,4 +211,10 @@ site/brand               logo, colours (tokens.css), brand guide      site/marke
   (Apache-2.0).
 - **Evaluation only:** JevBench (MIT) and Amazon MASSIVE (CC BY 4.0).
 
-See [NOTICE](NOTICE) and [docs/models.md](docs/models.md). To cite, use [CITATION.cff](CITATION.cff).
+See [NOTICE](https://github.com/sparrow-decider/sparrow-decider/tree/main/NOTICE) and [docs/models.md](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/models.md). To cite, use [CITATION.cff](https://github.com/sparrow-decider/sparrow-decider/blob/main/CITATION.cff).
+
+## Contact
+
+- **Email:** [vivek@sparrowdecider.com](mailto:vivek@sparrowdecider.com)
+- **Questions and results:** [GitHub Discussions](https://github.com/sparrow-decider/sparrow-decider/discussions)
+- **Bugs:** [GitHub Issues](https://github.com/sparrow-decider/sparrow-decider/issues)

@@ -2,7 +2,7 @@
 
 **Unofficial community project. Not an AWS or Strands product.**
 
-Contact: [GitHub Discussions](https://github.com/sparrow-decider/sparrow-decider/discussions) ·
+Contact: [vivek@sparrowdecider.com](mailto:vivek@sparrowdecider.com) · [GitHub Discussions](https://github.com/sparrow-decider/sparrow-decider/discussions) ·
 [GitHub Issues](https://github.com/sparrow-decider/sparrow-decider/issues)
 Repository: https://github.com/sparrow-decider/sparrow-decider
 Current version: 0.2.0

@@ -19,7 +19,7 @@ WWW = Path(__file__).resolve().parent.parent
 F = json.loads((WWW.parent / "facts.json").read_text())
 (WWW / "assets" / "facts.json").write_text(json.dumps(F, indent=2, ensure_ascii=False) + "\n")
 
-SITE_URL = "https://sparrow-decider.github.io/sparrow-decider/"  # set to the deployed base URL
+SITE_URL = "https://sparrowdecider.com/"
 VER = F["version"]
 REPO = F["repo"]
 BR = F.get("default_branch", "main")
@@ -332,7 +332,7 @@ def footer(root):
         <li><a href="{L["c"]}">C library{ICON["ext"]}</a></li></ul></div>
       <div class="f-col"><h2>Community</h2><ul>
         <li><a href="{L["repo"]}">GitHub{ICON["ext"]}</a></li><li><a href="{L["discussions"]}">Discussions{ICON["ext"]}</a></li>
-        <li><a href="{L["issues"]}">Report an issue{ICON["ext"]}</a></li><li><a href="{root}contact/">Contact</a></li></ul></div>
+        <li><a href="{L["issues"]}">Report an issue{ICON["ext"]}</a></li><li><a href="{root}contact/">Contact</a></li><li><a href="mailto:{F["contact"]["email"]}">{E(F["contact"]["email"])}</a></li></ul></div>
     </div>
     <div class="legal">
       <p class="disc">{E(F["disclaimer"])}</p>
@@ -1040,17 +1040,18 @@ def benchmarks():
 # ---------------------------------------------------------------- CONTACT
 def contact():
     root = "../"
-    body = page_hero("Contact", "Talk to the flock.", "Sparrow Decider is built in the open by the Sparrow Decider contributors. GitHub is the best place to reach us.", "ph-contact") + f'''
+    body = page_hero("Contact", "Talk to the flock.", "Sparrow Decider is built in the open by the Sparrow Decider contributors. Email us or use GitHub.", "ph-contact") + f'''
 <section class="page-sec" style="padding-top:8px"><div class="wrap stack">
 <div class="contact-grid">
+<a class="lcard wide" href="mailto:{F["contact"]["email"]}"><span class="ic">{ICON["chat"]}</span><h2>Email</h2><p>Partnerships, press, talks, or anything that does not fit a public thread.</p><span class="go">{E(F["contact"]["email"])} {ARR}</span></a>
 <a class="lcard" href="{L["discussions"]}"><span class="ic">{ICON["chat"]}</span><h2>Questions and ideas</h2><p>Ask how to fit a decision to your device, share what you built, or post benchmark results from your hardware.</p><span class="go">Open Discussions {ARR}</span></a>
 <a class="lcard" href="{L["issues"]}"><span class="ic">{ICON["bug"]}</span><h2>Bugs and requests</h2><p>Something wrong or missing? File an issue with your model ID, runtime (Python, C, ESP-IDF), your board, and the smallest input that shows the problem.</p><span class="go">Open an issue {ARR}</span></a>
 <a class="lcard wide" href="{L["contributing"]}"><span class="ic">{ICON["code"]}</span><h2>Contribute</h2><p>Code is Apache-2.0. Read the contributing guide and the quickstarts on GitHub before opening a pull request.</p><span class="go">Read the contributing guide {ARR}</span></a>
 </div>
-<p class="muted" style="max-width:880px">Cite this work with <a class="text-link" style="min-height:0" href="{L["citation"]}">CITATION.cff{ICON["ext"]}</a> in the repository. We do not offer paid support, and we do not collect email addresses on this site.</p>
+<p class="muted" style="max-width:880px">Cite this work with <a class="text-link" style="min-height:0" href="{L["citation"]}">CITATION.cff{ICON["ext"]}</a> in the repository. We do not offer paid support, and this site does not collect email addresses.</p>
 <div class="disc-block"><p>{E(F["disclaimer"])}</p><p>For questions about Strands Decider itself, please use that project's own channels.</p></div>
 </div></section>'''
-    return page("contact/", root, "contact/", "Contact · Sparrow Decider", "Questions, bugs and results from your hardware: GitHub Discussions and Issues.", body)
+    return page("contact/", root, "contact/", "Contact · Sparrow Decider", "Email vivek@sparrowdecider.com, or use GitHub Discussions and Issues for questions, bugs and results from your hardware.", body)
 
 
 # ---------------------------------------------------------------- 404

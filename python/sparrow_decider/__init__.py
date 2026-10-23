@@ -149,7 +149,7 @@ class Decider:
         """Load a model by file path or by name.
 
         Decider.load()                              # bundled sparrow-nano-general-v1.1
-        Decider.load("nano-robot")                  # bundled sparrow-nano-robot-v1.1
+        Decider.load("nano-robot")                  # bundled sparrow-nano-robot-v1.2
         Decider.load("sparrow-micro-general-v1.1")  # looked up in the bundled models, then $SPARROW_MODELS
         Decider.load("path/to/model.sparrow")
         """

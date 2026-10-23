@@ -14,17 +14,17 @@ from sparrow_decider import Decider
 d = Decider.load()   # sparrow-nano-general-v1.1, bundled
 
 answers = d.ask(
-    "User: I was charged twice for order 1182 and nobody replied to my email.",
+    "User: I was charged twice for order 1182, I want my money back",
     {
-        "intent":  {"type": "choice", "instructions": "What does the user want?",
-                    "criteria": {"refund": "money back for a charge", "cancel": "stop an order",
-                                 "status": "where is my order"}},
+        "tool":    {"type": "choice", "instructions": "Which tool fits this request?",
+                    "criteria": {"flights": "search and book flights", "refunds": "refund a payment",
+                                 "weather": "forecasts for a city", "calendar": "create or move meetings"}},
         "upset":   {"type": "noul",   "instructions": "Is the user upset?"},
         "urgency": {"type": "score",  "instructions": "How urgent is this?",
                     "criteria": ["can wait", "today", "right now"]},
     },
 )
-print(answers["intent"]["choice"], answers["intent"]["confidence"])
+print(answers["tool"]["choice"], answers["tool"]["confidence"])   # refunds, high confidence
 ```
 
 There are three question types. The answers have the same shapes as

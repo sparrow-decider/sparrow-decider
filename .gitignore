@@ -23,3 +23,6 @@ c/examples/*/dependencies.lock
 c/examples/*/build-*/
 c/examples/*/main/cases.h
 site/www/_shots/
+site/infra/node_modules/
+site/infra/cdk.out/
+site/infra/build/
