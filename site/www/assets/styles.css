@@ -745,3 +745,19 @@ figure.chart { margin: 0; padding: 22px; border-radius: var(--radius-lg); border
   table.data.mid .id { white-space: normal; overflow-wrap: anywhere; }
   table.data th, table.data td { padding: 10px 12px; }
 }
+
+/* ---------- phones: tighter rhythm, readable minimums, no clipped widgets ---------- */
+@media (max-width: 767px) {
+  .section { padding: 52px 0; }
+  .sec-head { margin-bottom: 26px; }
+  .sec-head p { font-size: 16px; }
+  .t-label, .t-lat small { font-size: 12px; }
+  .t-lat small { white-space: normal; }
+  .tier-tab small { font-size: 12.5px; }
+  .badge { font-size: 12px; }
+  .tier-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; overflow: visible; }
+  .tier-tab { min-width: 0; padding: 6px 8px; border-radius: 14px; }
+  .tier-tabs { margin-bottom: 16px; }
+  pre.code { font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: none; padding: 12px 16px 16px; }
+}
+@media (max-width: 599px) { .ruler { display: none; } }

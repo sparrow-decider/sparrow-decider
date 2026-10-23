@@ -125,18 +125,20 @@
 
 d = Decider.<span class="f">load</span>()   <span class="c"># bundled nano model</span>
 
-answers = d.<span class="f">ask</span>(
-    <span class="s">"User: I was charged twice for order 1182 and nobody replied to my email."</span>,
-    {
-        <span class="s">"intent"</span>:  {<span class="s">"type"</span>: <span class="s">"choice"</span>, <span class="s">"instructions"</span>: <span class="s">"What does the user want?"</span>,
-                    <span class="s">"criteria"</span>: {<span class="s">"refund"</span>: <span class="s">"money back for a charge"</span>, <span class="s">"cancel"</span>: <span class="s">"stop an order"</span>,
-                                 <span class="s">"status"</span>: <span class="s">"where is my order"</span>}},
-        <span class="s">"upset"</span>:   {<span class="s">"type"</span>: <span class="s">"noul"</span>,   <span class="s">"instructions"</span>: <span class="s">"Is the user upset?"</span>},
-        <span class="s">"urgency"</span>: {<span class="s">"type"</span>: <span class="s">"score"</span>,  <span class="s">"instructions"</span>: <span class="s">"How urgent is this?"</span>,
-                    <span class="s">"criteria"</span>: [<span class="s">"can wait"</span>, <span class="s">"today"</span>, <span class="s">"right now"</span>]},
-    },
-)
-<span class="k">print</span>(answers[<span class="s">"intent"</span>][<span class="s">"choice"</span>], answers[<span class="s">"intent"</span>][<span class="s">"confidence"</span>])</code></pre><div class="code-foot"><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/python.md">Python guide <span class="arr" aria-hidden="true">→</span></a></div></div><div class="code-panel" role="tabpanel" id="cp-cli" aria-labelledby="ct-cli" hidden><div class="bar"><span>terminal</span><button class="copy-btn" type="button" data-copy-target="code-cli" aria-label="Copy terminal"><svg class="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="label">Copy</span></button></div><pre class="code" tabindex="0"><code id="code-cli"><span class="k">pip</span> <span class="k">install</span> <span class="k">sparrow-decider</span>
+tools = {
+    <span class="s">"flights"</span>:  <span class="s">"search and book flights"</span>,
+    <span class="s">"refunds"</span>:  <span class="s">"refund a payment"</span>,
+    <span class="s">"weather"</span>:  <span class="s">"forecasts for a city"</span>,
+    <span class="s">"calendar"</span>: <span class="s">"create or move meetings"</span>,
+}
+answer = d.<span class="f">ask</span>(
+    <span class="s">"User: I was charged twice, I want my money back"</span>,
+    {<span class="s">"tool"</span>: {<span class="s">"type"</span>: <span class="s">"choice"</span>,
+              <span class="s">"instructions"</span>: <span class="s">"Which tool fits?"</span>,
+              <span class="s">"criteria"</span>: tools}},
+)[<span class="s">"tool"</span>]
+<span class="k">print</span>(answer[<span class="s">"choice"</span>], answer[<span class="s">"confidence"</span>])
+<span class="c"># refunds 0.97</span></code></pre><div class="code-foot"><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/python.md">Python guide <span class="arr" aria-hidden="true">→</span></a></div></div><div class="code-panel" role="tabpanel" id="cp-cli" aria-labelledby="ct-cli" hidden><div class="bar"><span>terminal</span><button class="copy-btn" type="button" data-copy-target="code-cli" aria-label="Copy terminal"><svg class="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="label">Copy</span></button></div><pre class="code" tabindex="0"><code id="code-cli"><span class="k">pip</span> <span class="k">install</span> <span class="k">sparrow-decider</span>
 <span class="k">sparrow-decider</span> models
 <span class="k">sparrow-decider</span> ask <span class="s">"battery: 6%\nfront_obstacle_m: 7.0"</span> --model nano-robot \
     --choice <span class="s">"What next?"</span> -o <span class="s">"continue=keep going"</span> -o <span class="s">"dock=go charge"</span> -o <span class="s">"stop=halt"</span>

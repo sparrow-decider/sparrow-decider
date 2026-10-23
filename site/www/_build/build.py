@@ -147,18 +147,20 @@ SNIP = {
 
 d = Decider.load()   # bundled nano model
 
-answers = d.ask(
-    "User: I was charged twice for order 1182 and nobody replied to my email.",
-    {
-        "intent":  {"type": "choice", "instructions": "What does the user want?",
-                    "criteria": {"refund": "money back for a charge", "cancel": "stop an order",
-                                 "status": "where is my order"}},
-        "upset":   {"type": "noul",   "instructions": "Is the user upset?"},
-        "urgency": {"type": "score",  "instructions": "How urgent is this?",
-                    "criteria": ["can wait", "today", "right now"]},
-    },
-)
-print(answers["intent"]["choice"], answers["intent"]["confidence"])''',
+tools = {
+    "flights":  "search and book flights",
+    "refunds":  "refund a payment",
+    "weather":  "forecasts for a city",
+    "calendar": "create or move meetings",
+}
+answer = d.ask(
+    "User: I was charged twice, I want my money back",
+    {"tool": {"type": "choice",
+              "instructions": "Which tool fits?",
+              "criteria": tools}},
+)["tool"]
+print(answer["choice"], answer["confidence"])
+# refunds 0.97''',
     "cli": '''pip install sparrow-decider
 sparrow-decider models
 sparrow-decider ask "battery: 6%\\nfront_obstacle_m: 7.0" --model nano-robot \\

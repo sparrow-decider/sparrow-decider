@@ -26,3 +26,5 @@ site/www/_shots/
 site/infra/node_modules/
 site/infra/cdk.out/
 site/infra/build/
+site/marketing/video/src/node_modules/
+site/marketing/video/frames/

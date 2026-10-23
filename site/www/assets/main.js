@@ -103,7 +103,7 @@
     entries.forEach(function (en) {
       if (en.isIntersecting) { en.target.classList.add("in"); revealIO.unobserve(en.target); }
     });
-  }, { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }) : null;
+  }, { threshold: 0.01, rootMargin: "0px 0px -4% 0px" }) : null;
   $$(".reveal, .stats, .anim, .layers").forEach(function (el) { if (revealIO && !reduced()) revealIO.observe(el); else el.classList.add("in"); });
 
   /* ---------- pause ambient loops off-screen ---------- */
