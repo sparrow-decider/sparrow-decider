@@ -1,0 +1,22 @@
+{
+ "model": "sparrow-nano-robot-v1.2.sparrow",
+ "file_mb": 1.11,
+ "load_s": 0.0,
+ "threads": 1,
+ "jevbench": {
+  "intelligence": -8.3,
+  "per_kind": {
+   "noul": -86.5,
+   "choice": 28.4,
+   "score": 33.3
+  },
+  "right": 115,
+  "n": 231
+ },
+ "latency_ms": {
+  "p50": 0.37,
+  "p95": 8.84,
+  "mean": 1.86
+ },
+ "peak_rss_mb": 39.2
+}

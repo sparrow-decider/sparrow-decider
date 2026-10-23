@@ -20,3 +20,6 @@ c/examples/*/sdkconfig.old
 c/examples/*/managed_components/
 c/examples/*/main/model.spb
 c/examples/*/dependencies.lock
+c/examples/*/build-*/
+c/examples/*/main/cases.h
+site/www/_shots/

@@ -1,0 +1,50 @@
+{
+ "model": "sparrow-nano-robot-v1.0",
+ "bench": "esp32s3",
+ "variant": "profile-int8-cache64k-simd",
+ "board": "ESP32-S3 QFN56 rev0.2, 16MB flash, 8MB PSRAM",
+ "cpu_mhz": 240,
+ "blob_bytes": 1600988,
+ "ctx_bytes": 89088,
+ "load_us": 36,
+ "cases": 155,
+ "accuracy": {
+  "robotbench": "40/55",
+  "massive_intent": "51/100"
+ },
+ "agree_with_host": "155/155",
+ "max_prob_diff_vs_host": 0.06215,
+ "latency": {
+  "all": {
+   "p50_ms": 20.68,
+   "p95_ms": 42.84,
+   "mean_ms": 21.66,
+   "max_ms": 43.27
+  },
+  "robotbench": {
+   "p50_ms": 22.73,
+   "p95_ms": 24.48,
+   "mean_ms": 21.5,
+   "max_ms": 24.73
+  },
+  "massive_intent": {
+   "p50_ms": 20.45,
+   "p95_ms": 42.95,
+   "mean_ms": 21.75,
+   "max_ms": 43.27
+  }
+ },
+ "pico_rover_action_us": 42.422,
+ "pico_cycles": 10181,
+ "profile_ms_total": {
+  "pool_state_q": 101.9,
+  "pool_options": 101.0,
+  "kv_pairs": 31.9,
+  "features": 28.8,
+  "layer1": 2506.8,
+  "layer2": 585.9
+ },
+ "heap_free": 8592740,
+ "heap_min": 8592740,
+ "stack_hwm_words": 14268
+}

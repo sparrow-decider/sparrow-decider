@@ -26,7 +26,7 @@ from .engine import Encoder, PointerHead, softmax
 from .static import StaticModel
 from .tokenizer import BPETokenizer
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = ["Decider", "available_models", "__version__"]
 
 HEADERS = {
@@ -39,7 +39,7 @@ NOUL_DEFAULT = {
     "true": "the statement holds for this state",
 }
 _HERE = os.path.dirname(__file__)
-DEFAULT_MODEL = "sparrow-nano-general-v1.0"
+DEFAULT_MODEL = "sparrow-nano-general-v1.1"
 
 
 def _search_dirs() -> list[str]:
@@ -148,8 +148,8 @@ class Decider:
     def load(cls, path: str | None = None) -> "Decider":
         """Load a model by file path or by name.
 
-        Decider.load()                              # bundled sparrow-nano-general-v1.0
-        Decider.load("nano-robot")                  # bundled sparrow-nano-robot-v1.0
+        Decider.load()                              # bundled sparrow-nano-general-v1.1
+        Decider.load("nano-robot")                  # bundled sparrow-nano-robot-v1.1
         Decider.load("sparrow-micro-general-v1.1")  # looked up in the bundled models, then $SPARROW_MODELS
         Decider.load("path/to/model.sparrow")
         """

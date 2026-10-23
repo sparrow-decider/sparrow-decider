@@ -1,0 +1,169 @@
+{
+  "_note": "Single source of truth for every number on the website and in marketing. Verified measurements only. Do not invent or round up.",
+  "name": "Sparrow Decider",
+  "disclaimer": "Unofficial community project. Not an AWS or Strands product.",
+  "repo": "https://github.com/sparrow-decider/sparrow-decider",
+  "install": "pip install sparrow-decider",
+  "version": "0.2.0",
+  "license": "Apache-2.0 (code); model weights derived from MIT-licensed potion-base-8M and Ettin encoders",
+  "what": "Decision models that answer yes/no, pick-one and score questions about a state, with calibrated probabilities, in the same shapes as Strands Decider. From a 47 MB model on a laptop down to a ~2 KB compiled model on a microcontroller.",
+  "tiers": [
+    {
+      "tier": "pico",
+      "id": "sparrow-pico-rover-v1.1",
+      "size": "~2 KB per question (501 parameters)",
+      "input": "sensor numbers, flags, enums",
+      "where": "any microcontroller",
+      "esp32s3": "9.3 µs per decision",
+      "laptop": "0.18 µs",
+      "quality": "94.0% vs the spec's rules (its 2B teacher: 94.2%)"
+    },
+    {
+      "tier": "nano",
+      "id": "sparrow-nano-general-v1.1",
+      "size": "2.2 MB",
+      "input": "text",
+      "where": "ESP32-S3, Raspberry Pi, laptop",
+      "esp32s3": "3.8 ms per decision",
+      "quality": "general text decisions; JevBench 122/231, MASSIVE intent 0.588",
+      "laptop": "0.06 ms (C)"
+    },
+    {
+      "tier": "nano",
+      "id": "sparrow-nano-robot-v1.1",
+      "size": "1.19 MB",
+      "input": "text with sensor readings",
+      "where": "ESP32-S3, Pi, laptop",
+      "esp32s3": "7.6 ms per decision",
+      "laptop": "0.09 ms (C)",
+      "quality": "RobotBench 38/55, navigation from sensor numbers 10/10 (public 2B: 3/10)"
+    },
+    {
+      "tier": "nano",
+      "id": "sparrow-nano-robot-v1.2",
+      "size": "1.11 MB",
+      "input": "text with sensor readings",
+      "where": "ESP32-S3, Pi, laptop",
+      "esp32s3": "3.5 ms per decision",
+      "quality": "RobotBench 36/55, navigation 8/10; the fastest robot nano"
+    },
+    {
+      "tier": "micro",
+      "id": "sparrow-micro-general-v1.1",
+      "size": "7.6 MB",
+      "input": "text",
+      "where": "Pi, laptop",
+      "laptop": "0.22 ms (C)"
+    },
+    {
+      "tier": "tiny",
+      "id": "sparrow-tiny-general-v1.0",
+      "size": "17.9 MB",
+      "input": "text",
+      "where": "laptop, Pi",
+      "laptop": "23 ms (numpy)"
+    },
+    {
+      "tier": "small",
+      "id": "sparrow-small-general-v1.0",
+      "size": "47 MB",
+      "input": "text",
+      "where": "laptop, Pi, Jetson",
+      "laptop": "64 ms (numpy)"
+    }
+  ],
+  "headline_numbers": [
+    {
+      "value": "9.3 µs",
+      "label": "per decision on a $10 ESP32-S3 (sparrow-pico)"
+    },
+    {
+      "value": "3.8 ms",
+      "label": "per text decision on the same chip (sparrow-nano-general)"
+    },
+    {
+      "value": "40 / 55",
+      "label": "robot decisions right: a 1.37 MB nano-robot v1.0 ties the public 2-billion-parameter Strands Decider"
+    },
+    {
+      "value": "numpy only",
+      "label": "Python install; C99 runtime with no malloc"
+    },
+    {
+      "value": "~2 KB",
+      "label": "per compiled question (sparrow-pico, 501 parameters)"
+    }
+  ],
+  "speedups_on_esp32s3": {
+    "nano-general": "9.6 ms -> 3.8 ms",
+    "nano-robot": "73.5 ms (first run) -> 13.2 ms (v1.0) -> 7.6 ms (v1.1) -> 3.5 ms (v1.2)",
+    "pico": "42.9 µs -> 9.3 µs"
+  },
+  "board": "ESP32-S3 (QFN56 rev0.2), 240 MHz, 16 MB flash, 8 MB PSRAM",
+  "runtimes": [
+    "Python (numpy only)",
+    "C99, no malloc, model read from flash (ESP-IDF component)",
+    "sparrow-pico compiler: device spec -> C header"
+  ],
+  "how_it_works": [
+    "A full Strands Decider (4B) teaches the text tiers through distillation on ~430k decisions.",
+    "nano: static embeddings, pruned 8-16k vocabulary, 128-d, plus key-value number pooling that reads 'battery: 6%' as a value.",
+    "pico: you write a spec (sensors, rules, questions); the public Strands Decider 2B labels sampled states; the compiler writes one tiny MLP per question as C.",
+    "On the ESP32-S3: int8 SIMD on the vector unit (ESP-NN kernel), weights in PSRAM / internal RAM."
+  ],
+  "honest_limits": [
+    "Open-ended language it never trained on: well behind the 2B (MASSIVE domain routing 0.37-0.67 across released Sparrow models vs 0.86).",
+    "Yes/no judgement on JevBench is near chance at every tier.",
+    "pico answers only the questions it was compiled for."
+  ],
+  "credits": [
+    "potion-base-8M (MinishLab, MIT)",
+    "Ettin encoders (JHU CLSP, MIT)",
+    "Strands Decider (Apache-2.0)",
+    "ESP-NN (Espressif, Apache-2.0)",
+    "Amazon MASSIVE (CC BY 4.0, evaluation only)",
+    "JevBench (MIT, evaluation only)"
+  ],
+  "contact": {
+    "github_issues": "https://github.com/sparrow-decider/sparrow-decider/issues",
+    "discussions": "https://github.com/sparrow-decider/sparrow-decider/discussions"
+  },
+  "_updated": "2026-10-23: v1.1 nanos measured on the ESP32-S3",
+  "hero_trace": {
+    "_source": "computed with the released models; the C runtime on the ESP32-S3 gives the same answers",
+    "pico": {
+      "model": "sparrow-pico-rover-v1.1",
+      "state": "battery: 6%  front_obstacle_m: 7.0  goal_m: 30  path: clear",
+      "question": "What should the robot do next?",
+      "probabilities": {
+        "continue": 0.06,
+        "slow": 0.07,
+        "stop": 0.04,
+        "dock": 0.81,
+        "replan": 0.03
+      },
+      "answer": "dock",
+      "time": "9.3 µs on ESP32-S3"
+    },
+    "nano": {
+      "model": "sparrow-nano-robot-v1.1",
+      "state": "operator: grab that blue bottle",
+      "question": "Which skill should the robot run?",
+      "probabilities": {
+        "pick": 0.95,
+        "place": 0.01,
+        "navigate": 0.04,
+        "speak": 0.0,
+        "stop": 0.0
+      },
+      "answer": "pick",
+      "time": "7.6 ms on ESP32-S3"
+    }
+  },
+  "bundled_in_pip": [
+    "sparrow-nano-general-v1.1",
+    "sparrow-nano-robot-v1.1"
+  ],
+  "default_branch": "main",
+  "parity": "The C runtime matches the Python runtime to within 1e-5 on the host; on the ESP32-S3, int8 builds agree with the host on 150-155 of 155 decisions."
+}

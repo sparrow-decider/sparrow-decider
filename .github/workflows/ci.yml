@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install numpy && python c/tools/pack.py python/sparrow_decider/models/sparrow-nano-robot-v1.0.sparrow -o c/examples/esp32s3_robot/main/model.spb
+      - run: pip install numpy && python c/tools/pack.py python/sparrow_decider/models/sparrow-nano-robot-v1.1.sparrow -o c/examples/esp32s3_robot/main/model.spb
       - uses: espressif/esp-idf-ci-action@v1
         with:
           esp_idf_version: v5.4.1

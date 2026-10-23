@@ -5,6 +5,18 @@
 #include "sparrow.h"
 
 #include <math.h>
+
+#ifdef SPARROW_PROFILE
+/* Profiling build: the host supplies a cycle counter; sparrow_prof[] accumulates per stage:
+ * 0 state+question pooling, 1 option pooling, 2 key-value pairs, 3 features, 4 layer 1, 5 layer 2. */
+extern uint32_t sparrow_cycles(void);
+uint32_t sparrow_prof[6];
+#define PROF_T(v) uint32_t v = sparrow_cycles()
+#define PROF_ADD(i, t0) sparrow_prof[i] += sparrow_cycles() - (t0)
+#else
+#define PROF_T(v)
+#define PROF_ADD(i, t0)
+#endif
 #include <stdlib.h>
 #include <string.h>
 
@@ -64,6 +76,7 @@ sparrow_status sparrow_load(sparrow_model *m, const void *blob, size_t len) {
         TAKE(m->g_b, float, D);
         TAKE(m->tau, float, 1);
     }
+    if (u32(h + 8) & 2u) TAKE(m->gain, float, m->nf);
     TAKE(m->w0, int8_t, H * m->nf * D);
     TAKE(m->s0, float, H);
     TAKE(m->b0, float, H);
@@ -73,6 +86,27 @@ sparrow_status sparrow_load(sparrow_model *m, const void *blob, size_t len) {
     TAKE(m->w4, float, H);
     TAKE(m->b4, float, 1);
 #undef TAKE
+    return SPARROW_OK;
+}
+
+static size_t al16(size_t n) { return (n + 15u) & ~(size_t)15u; }
+
+size_t sparrow_mlp_bytes(const sparrow_model *m) {
+    size_t H = m->hidden;
+    return al16(H * m->nf * m->D) + al16(H * H) + 5 * al16(H * sizeof(float));
+}
+
+sparrow_status sparrow_move_mlp(sparrow_model *m, void *dst, size_t len) {
+    size_t H = m->hidden, n0 = H * m->nf * m->D, n2 = H * H, nf = H * sizeof(float);
+    uint8_t *p = (uint8_t *)dst;
+    if (len < sparrow_mlp_bytes(m) || ((uintptr_t)p & 15u)) return SPARROW_ERR_ARGS;
+    memcpy(p, m->w0, n0); m->w0 = (const int8_t *)p; p += al16(n0);
+    memcpy(p, m->w2, n2); m->w2 = (const int8_t *)p; p += al16(n2);
+    memcpy(p, m->s0, nf); m->s0 = (const float *)p; p += al16(nf);
+    memcpy(p, m->b0, nf); m->b0 = (const float *)p; p += al16(nf);
+    memcpy(p, m->s2, nf); m->s2 = (const float *)p; p += al16(nf);
+    memcpy(p, m->b2, nf); m->b2 = (const float *)p; p += al16(nf);
+    memcpy(p, m->w4, nf); m->w4 = (const float *)p;
     return SPARROW_OK;
 }
 
@@ -404,12 +438,15 @@ static int read_pairs(const sparrow_model *m, sparrow_ctx *ctx, const char *s, l
 static float gelu(float x) { return 0.5f * x * (1.0f + erff(x * 0.70710678f)); }
 
 #if SPARROW_INT8_ACT
-/* Weak so a port can supply a SIMD version (e.g. the ESP32-S3 PIE unit). */
-__attribute__((weak)) int32_t sparrow_dot_s8(const int8_t *a, const int8_t *b, uint32_t n) {
+#ifndef SPARROW_DOT_PORT
+/* Portable int8 dot product. A port (e.g. c/sparrow/port/esp32s3, on the PIE vector unit) defines
+ * SPARROW_DOT_PORT and supplies its own sparrow_dot_s8. */
+int32_t sparrow_dot_s8(const int8_t *a, const int8_t *b, uint32_t n) {
     int32_t acc = 0;
     for (uint32_t i = 0; i < n; i++) acc += (int32_t)a[i] * (int32_t)b[i];
     return acc;
 }
+#endif
 
 /* Symmetric int8 with one scale for the vector; returns the scale. */
 static float quantize(const float *x, uint32_t n, int8_t *q) {
@@ -451,6 +488,7 @@ sparrow_status sparrow_probs(const sparrow_model *m, sparrow_ctx *ctx, const cha
         n_opts = 2;
     }
     if (n_opts < 2 || n_opts > SPARROW_MAX_OPTIONS || (unsigned)kind > 2) return SPARROW_ERR_ARGS;
+    PROF_T(p0);
     const char *st;
     size_t sl = trimmed(state ? state : "", &st);
     sparrow_pool(m, st, sl, ctx->s);
@@ -460,12 +498,16 @@ sparrow_status sparrow_probs(const sparrow_model *m, sparrow_ctx *ctx, const cha
     for (uint32_t d = 0; d < D; d++) ctx->q[d] += m->kind[kind * D + d];
     normalize(ctx->s, D);
     normalize(ctx->q, D);
+    PROF_ADD(0, p0);
+    PROF_T(p1);
     memset(ctx->omean, 0, D * sizeof(float));
     for (int k = 0; k < n_opts; k++) {
         pool_option(m, opts[k].name, opts[k].desc, ctx->o[k]);
         normalize(ctx->o[k], D);
         for (uint32_t d = 0; d < D; d++) ctx->omean[d] += ctx->o[k][d] / (float)n_opts;
     }
+    PROF_ADD(1, p1);
+    PROF_T(p2);
     int np = 0;
     if (m->kv) {
         np = read_pairs(m, ctx, st, (long)sl);
@@ -473,73 +515,121 @@ sparrow_status sparrow_probs(const sparrow_model *m, sparrow_ctx *ctx, const cha
         for (int j = 0; j < np; j++)
             for (uint32_t d = 0; d < D; d++) ctx->kv[d] += ctx->pv[j][d] / (float)np;
     }
+    PROF_ADD(2, p2);
     float temp = m->temps[kind] > 0 ? m->temps[kind] : 1.0f, mx = -1e30f;
-    for (int k = 0; k < n_opts; k++) {
-        const float *o = ctx->o[k], *s = ctx->s, *q = ctx->q, *om = ctx->omean;
-        float *f = ctx->feat;
-        for (uint32_t d = 0; d < D; d++) {
-            f[d] = o[d];
-            f[D + d] = s[d] * o[d];
-            f[2 * D + d] = q[d] * o[d];
-            f[3 * D + d] = s[d] * q[d] * o[d];
-            f[4 * D + d] = o[d] - om[d];
-            f[5 * D + d] = (s[d] - om[d]) * o[d];
-        }
-        if (m->kv) {
-            memset(ctx->kvo, 0, D * sizeof(float));
-            if (np) {
-                float att[SPARROW_MAX_PAIRS], amx = -1e30f, z = 0;
-                for (int j = 0; j < np; j++) {
-                    float dot = 0;
-                    for (uint32_t d = 0; d < D; d++) dot += o[d] * ctx->el[j][d];
-                    att[j] = m->tau[0] * dot;
-                    if (att[j] > amx) amx = att[j];
-                }
-                for (int j = 0; j < np; j++) z += (att[j] = expf(att[j] - amx));
-                for (int j = 0; j < np; j++)
-                    for (uint32_t d = 0; d < D; d++) ctx->kvo[d] += att[j] / z * ctx->pv[j][d];
-            }
+    uint32_t IN = m->nf * D;
+    /* Options are scored in batches so each MLP weight row is read once per batch, not once per
+     * option: on a microcontroller the weights stream from external flash and that read dominates. */
+    for (int k0 = 0; k0 < n_opts; k0 += SPARROW_BATCH) {
+        int nb = n_opts - k0 < SPARROW_BATCH ? n_opts - k0 : SPARROW_BATCH;
+        PROF_T(p3);
+        for (int j = 0; j < nb; j++) {
+            const float *o = ctx->o[k0 + j], *s = ctx->s, *q = ctx->q, *om = ctx->omean;
+            float *f = ctx->feat[j];
             for (uint32_t d = 0; d < D; d++) {
-                f[6 * D + d] = ctx->kv[d] * o[d];
-                f[7 * D + d] = ctx->kv[d] * q[d] * o[d];
-                f[8 * D + d] = ctx->kvo[d];
-                f[9 * D + d] = ctx->kvo[d] * q[d];
+                f[d] = o[d];
+                f[D + d] = s[d] * o[d];
+                f[2 * D + d] = q[d] * o[d];
+                f[3 * D + d] = s[d] * q[d] * o[d];
+                f[4 * D + d] = o[d] - om[d];
+                f[5 * D + d] = (s[d] - om[d]) * o[d];
+            }
+            if (m->kv) {
+                memset(ctx->kvo, 0, D * sizeof(float));
+                if (np) {
+                    float att[SPARROW_MAX_PAIRS], amx = -1e30f, z = 0;
+                    for (int i = 0; i < np; i++) {
+                        float dot = 0;
+                        for (uint32_t d = 0; d < D; d++) dot += o[d] * ctx->el[i][d];
+                        att[i] = m->tau[0] * dot;
+                        if (att[i] > amx) amx = att[i];
+                    }
+                    for (int i = 0; i < np; i++) z += (att[i] = expf(att[i] - amx));
+                    for (int i = 0; i < np; i++)
+                        for (uint32_t d = 0; d < D; d++) ctx->kvo[d] += att[i] / z * ctx->pv[i][d];
+                }
+                for (uint32_t d = 0; d < D; d++) {
+                    f[6 * D + d] = ctx->kv[d] * o[d];
+                    f[7 * D + d] = ctx->kv[d] * q[d] * o[d];
+                    f[8 * D + d] = ctx->kvo[d];
+                    f[9 * D + d] = ctx->kvo[d] * q[d];
+                }
             }
         }
-        uint32_t IN = m->nf * D;
+        if (m->gain)
+            for (int j = 0; j < nb; j++)
+                for (uint32_t b = 0; b < m->nf; b++) {
+                    float g = m->gain[b], *f = ctx->feat[j] + b * D;
+                    for (uint32_t d = 0; d < D; d++) f[d] *= g;
+                }
+        PROF_ADD(3, p3);
+        PROF_T(p4);
+        float logit[SPARROW_BATCH];
+        for (int j = 0; j < nb; j++) logit[j] = m->b4[0];
 #if SPARROW_INT8_ACT
         /* int8 x int8 -> int32 dot products; each D-wide feature block gets its own scale */
-        float bs[10], hs;
-        for (uint32_t b = 0; b < m->nf; b++) bs[b] = quantize(f + b * D, D, ctx->fq + b * D);
-        for (uint32_t h = 0; h < H; h++) {
-            const int8_t *w = m->w0 + (size_t)h * IN;
-            float acc = 0;
-            for (uint32_t b = 0; b < m->nf; b++) acc += (float)sparrow_dot_s8(w + b * D, ctx->fq + b * D, D) * bs[b];
-            ctx->h0[h] = gelu(acc * m->s0[h] + m->b0[h]);
+        float bs[SPARROW_BATCH][10], hs[SPARROW_BATCH];
+        if (m->gain) {
+            /* balanced blocks: one scale per option and one dot product over the whole row */
+            for (int j = 0; j < nb; j++) bs[j][0] = quantize(ctx->feat[j], IN, ctx->fq[j]);
+            for (uint32_t h = 0; h < H; h++) {
+                const int8_t *w = m->w0 + (size_t)h * IN;
+                for (int j = 0; j < nb; j++) {
+                    float acc = (float)sparrow_dot_s8(w, ctx->fq[j], IN) * bs[j][0];
+                    ctx->h0[j][h] = gelu(acc * m->s0[h] + m->b0[h]);
+                }
+            }
+        } else {
+            for (int j = 0; j < nb; j++)
+                for (uint32_t b = 0; b < m->nf; b++) bs[j][b] = quantize(ctx->feat[j] + b * D, D, ctx->fq[j] + b * D);
+            for (uint32_t h = 0; h < H; h++) {
+                const int8_t *w = m->w0 + (size_t)h * IN;
+                for (int j = 0; j < nb; j++) {
+                    float acc = 0;
+                    for (uint32_t b = 0; b < m->nf; b++)
+                        acc += (float)sparrow_dot_s8(w + b * D, ctx->fq[j] + b * D, D) * bs[j][b];
+                    ctx->h0[j][h] = gelu(acc * m->s0[h] + m->b0[h]);
+                }
+            }
         }
-        hs = quantize(ctx->h0, H, ctx->hq);
-        float logit = m->b4[0];
+        PROF_ADD(4, p4);
+        PROF_T(p5);
+        for (int j = 0; j < nb; j++) hs[j] = quantize(ctx->h0[j], H, ctx->hq[j]);
         for (uint32_t h = 0; h < H; h++) {
-            float acc = (float)sparrow_dot_s8(m->w2 + (size_t)h * H, ctx->hq, H) * hs;
-            logit += m->w4[h] * gelu(acc * m->s2[h] + m->b2[h]);
+            const int8_t *w = m->w2 + (size_t)h * H;
+            for (int j = 0; j < nb; j++) {
+                float acc = (float)sparrow_dot_s8(w, ctx->hq[j], H) * hs[j];
+                logit[j] += m->w4[h] * gelu(acc * m->s2[h] + m->b2[h]);
+            }
         }
+        PROF_ADD(5, p5);
 #else
         for (uint32_t h = 0; h < H; h++) {
             const int8_t *w = m->w0 + (size_t)h * IN;
-            float acc = 0;
-            for (uint32_t i = 0; i < IN; i++) acc += (float)w[i] * f[i];
-            ctx->h0[h] = gelu(acc * m->s0[h] + m->b0[h]);
+            for (int j = 0; j < nb; j++) {
+                const float *f = ctx->feat[j];
+                float acc = 0;
+                for (uint32_t i = 0; i < IN; i++) acc += (float)w[i] * f[i];
+                ctx->h0[j][h] = gelu(acc * m->s0[h] + m->b0[h]);
+            }
         }
-        float logit = m->b4[0];
+        PROF_ADD(4, p4);
+        PROF_T(p5);
         for (uint32_t h = 0; h < H; h++) {
             const int8_t *w = m->w2 + (size_t)h * H;
-            float acc = 0;
-            for (uint32_t i = 0; i < H; i++) acc += (float)w[i] * ctx->h0[i];
-            logit += m->w4[h] * gelu(acc * m->s2[h] + m->b2[h]);
+            for (int j = 0; j < nb; j++) {
+                const float *x = ctx->h0[j];
+                float acc = 0;
+                for (uint32_t i = 0; i < H; i++) acc += (float)w[i] * x[i];
+                logit[j] += m->w4[h] * gelu(acc * m->s2[h] + m->b2[h]);
+            }
         }
+        PROF_ADD(5, p5);
 #endif
-        probs[k] = logit / temp;
-        if (probs[k] > mx) mx = probs[k];
+        for (int j = 0; j < nb; j++) {
+            probs[k0 + j] = logit[j] / temp;
+            if (probs[k0 + j] > mx) mx = probs[k0 + j];
+        }
     }
     float z = 0;
     for (int k = 0; k < n_opts; k++) z += (probs[k] = expf(probs[k] - mx));

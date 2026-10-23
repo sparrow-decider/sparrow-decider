@@ -141,17 +141,39 @@ def emit_c(spec, heads, path):
     for f in spec["features"]:
         c = c_ident(f["name"])
         if f["type"] == "number":
-            L.append(f"    x[i++] = (s->{c} - ({float(f['min'])!r}f)) / ({float(f['max'] - f['min'])!r}f);")
+            L.append(f"    x[i++] = (s->{c} - ({float(f['min'])!r}f)) * ({1.0 / float(f['max'] - f['min'])!r}f);")
         elif f["type"] == "bool":
             L.append(f"    x[i++] = s->{c} ? 1.f : 0.f;")
         else:
             L.append(f"    for (int k = 0; k < {len(f['values'])}; k++) x[i++] = ((int)s->{c} == k) ? 1.f : 0.f;")
     L += ["    (void)i;", "}", "",
+          "#ifndef SPARROW_PICO_KERNEL",
+          "#define SPARROW_PICO_KERNEL 1  /* 0 simple, 1 four accumulators, 2 skip zero inputs */",
+          "#endif",
           "static inline void sparrow_pico_dense(const float *w, const float *b, const float *x, int n_in, int n_out,",
           "                                      int relu, float *y) {",
+          "#if SPARROW_PICO_KERNEL == 2",
+          "    /* inputs after a ReLU are often 0: skip them. Same arithmetic as the simple kernel, reordered. */",
+          "    int nz[64], n = 0;",
+          "    for (int i = 0; i < n_in; i++) if (x[i] != 0.f) nz[n++] = i;",
+          "    for (int o = 0; o < n_out; o++) {",
+          "        const float *r = w + o * n_in;", "        float a = b[o];",
+          "        for (int j = 0; j < n; j++) a += r[nz[j]] * x[nz[j]];",
+          "        y[o] = relu && a < 0 ? 0 : a;", "    }",
+          "#elif SPARROW_PICO_KERNEL == 1",
+          "    /* four independent sums hide the FPU's multiply-add latency */",
+          "    for (int o = 0; o < n_out; o++) {",
+          "        const float *r = w + o * n_in;", "        float a0 = b[o], a1 = 0, a2 = 0, a3 = 0;", "        int i = 0;",
+          "        for (; i + 3 < n_in; i += 4) {",
+          "            a0 += r[i] * x[i]; a1 += r[i + 1] * x[i + 1]; a2 += r[i + 2] * x[i + 2]; a3 += r[i + 3] * x[i + 3];",
+          "        }",
+          "        for (; i < n_in; i++) a0 += r[i] * x[i];",
+          "        float a = (a0 + a1) + (a2 + a3);", "        y[o] = relu && a < 0 ? 0 : a;", "    }",
+          "#else",
           "    for (int o = 0; o < n_out; o++) {", "        float a = b[o];",
           "        for (int i = 0; i < n_in; i++) a += w[o * n_in + i] * x[i];",
-          "        y[o] = relu && a < 0 ? 0 : a;", "    }", "}", ""]
+          "        y[o] = relu && a < 0 ? 0 : a;", "    }",
+          "#endif", "}", ""]
     for qn, (q, layers, temp) in heads.items():
         c = f"{nm}_{c_ident(qn)}"
         names = [o[0] for o in options(q)]
@@ -162,12 +184,20 @@ def emit_c(spec, heads, path):
         h = layers[0][0].shape[0]
         k = layers[-1][0].shape[0]
         L += [f"#define {c.upper()}_N {k}",
-              f"static inline void {c}(const {nm}_state *s, float *probs) {{",
-              f"    float x[{NM}_N_IN], h0[{h}], h1[{h}], m = -1e30f, z = 0;",
+              f"/* raw scores; the largest is the answer */",
+              f"static inline void {c}_logits(const {nm}_state *s, float *out) {{",
+              f"    float x[{NM}_N_IN], h0[{h}], h1[{h}];",
               f"    {nm}_features(s, x);",
               f"    sparrow_pico_dense({c}_w0, {c}_b0, x, {NM}_N_IN, {h}, 1, h0);",
               f"    sparrow_pico_dense({c}_w1, {c}_b1, h0, {h}, {h}, 1, h1);",
-              f"    sparrow_pico_dense({c}_w2, {c}_b2, h1, {h}, {k}, 0, probs);",
+              f"    sparrow_pico_dense({c}_w2, {c}_b2, h1, {h}, {k}, 0, out);", "}",
+              f"/* index of the chosen option, without the softmax */",
+              f"static inline int {c}_argmax(const {nm}_state *s) {{",
+              f"    float l[{k}];", f"    int b = 0;", f"    {c}_logits(s, l);",
+              f"    for (int i = 1; i < {k}; i++) if (l[i] > l[b]) b = i;", "    return b;", "}",
+              f"/* probabilities over the options */",
+              f"static inline void {c}(const {nm}_state *s, float *probs) {{",
+              f"    float m = -1e30f, z = 0;", f"    {c}_logits(s, probs);",
               f"    for (int i = 0; i < {k}; i++) if (probs[i] > m) m = probs[i];",
               f"    for (int i = 0; i < {k}; i++) z += (probs[i] = expf(probs[i] - m));",
               f"    for (int i = 0; i < {k}; i++) probs[i] /= z;", "}"]
@@ -214,6 +244,28 @@ def cmd_build(a):
     print(json.dumps(report, indent=1))
 
 
+def cmd_emit(a):
+    """Re-emit the C header from a finished build's heads.npz, without retraining."""
+    spec = json.load(open(a.spec))
+    z = np.load(f"{a.work}/heads.npz")
+    heads = {qn: (q, [(z[f"{qn}_{i}_w"], z[f"{qn}_{i}_b"]) for i in range(3)], 1.0) for qn, q in spec["questions"].items()}
+    os.makedirs(a.out, exist_ok=True)
+    h = os.path.join(a.out, f"sparrow_pico_{c_ident(spec['name'])}.h")
+    emit_c(spec, heads, h)
+    print(h)
+
+
+def cmd_emit(a):
+    """Re-emit the C header from a finished build's heads.npz, without retraining."""
+    spec = json.load(open(a.spec))
+    z = np.load(f"{a.work}/heads.npz")
+    heads = {qn: (q, [(z[f"{qn}_{i}_w"], z[f"{qn}_{i}_b"]) for i in range(3)], 1.0) for qn, q in spec["questions"].items()}
+    os.makedirs(a.out, exist_ok=True)
+    h = os.path.join(a.out, f"sparrow_pico_{c_ident(spec['name'])}.h")
+    emit_c(spec, heads, h)
+    print(h)
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -227,10 +279,14 @@ def main():
     b.add_argument("--work", required=True)
     b.add_argument("--teacher")
     b.add_argument("--out", required=True)
-    b.add_argument("--hidden", type=int, default=32)
+    b.add_argument("--hidden", type=int, default=16)
     b.add_argument("--epochs", type=int, default=200)
+    e = sub.add_parser("emit")
+    e.add_argument("spec")
+    e.add_argument("--work", required=True)
+    e.add_argument("--out", required=True)
     a = ap.parse_args()
-    {"sample": cmd_sample, "build": cmd_build}[a.cmd](a)
+    {"sample": cmd_sample, "build": cmd_build, "emit": cmd_emit}[a.cmd](a)
 
 
 if __name__ == "__main__":

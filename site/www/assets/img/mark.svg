@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">Sparrow Decider</title>
+  <defs>
+    <linearGradient id="sd-sun" x1="6" y1="58" x2="60" y2="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6"/><stop offset=".4" stop-color="#FF3D8B"/><stop offset=".72" stop-color="#FF6B4A"/><stop offset="1" stop-color="#FFB547"/>
+    </linearGradient>
+    <mask id="sd-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M10.8 46.2 C23.5 35 40 28 58 29" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="47.4" cy="20.2" r="2.8" fill="#000"/>
+    </mask>
+  </defs>
+  <g transform="translate(-1.5 -3)"><path mask="url(#sd-cut)" d="M4 58 L20 41 C21 25 30.5 12 44.5 12 C51.5 12 56 16 57.2 21.6 L63 24.6 L56.4 27.2 C54.4 41.5 44 50.5 28 50.5 Z" fill="url(#sd-sun)"/></g>
+</svg>

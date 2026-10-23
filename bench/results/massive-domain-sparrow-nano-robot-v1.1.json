@@ -1,0 +1,11 @@
+{
+ "model": "sparrow-nano-robot-v1.1",
+ "bench": "massive_domain.jsonl",
+ "right": 309,
+ "n": 600,
+ "acc": 0.515,
+ "per_family": {
+  "domain": "309/600"
+ },
+ "p50_ms": 0.56
+}

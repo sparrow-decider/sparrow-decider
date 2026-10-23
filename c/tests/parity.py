@@ -50,6 +50,7 @@ def main():
     ap.add_argument("model")
     ap.add_argument("--n", type=int, default=1500)
     ap.add_argument("--out")
+    ap.add_argument("--balance", action="store_true", help="pack with per-block gains")
     a = ap.parse_args()
     build = os.path.join(ROOT, "c", "build")
     os.makedirs(build, exist_ok=True)
@@ -57,7 +58,12 @@ def main():
     subprocess.run(["cc", "-std=c99", *os.environ.get("SPARROW_CFLAGS", "-O3 -ffast-math").split(), "-Wall", "-Wextra", "-I", os.path.join(ROOT, "c/sparrow/include"),
                     os.path.join(ROOT, "c/sparrow/src/sparrow.c"), os.path.join(HERE, "parity_main.c"), "-lm", "-o", exe],
                    check=True)
-    blob = pack(*load(a.model))
+    gains = None
+    if a.balance:
+        from pack import block_gains
+        cs = [(json.loads(l)["state"], json.loads(l)["question"]) for l in open(os.path.join(ROOT, "bench/robot/robotbench_v0.jsonl"))]
+        gains = block_gains(a.model, cs)
+    blob = pack(*load(a.model), gains=gains)
     spb = os.path.join(build, "parity_model.spb")
     open(spb, "wb").write(blob)
     d = Decider.load(a.model)

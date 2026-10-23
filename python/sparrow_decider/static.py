@@ -91,6 +91,14 @@ class StaticModel:
 
     def logits(self, state: Any, instructions: Any, kind: str, opts: list[tuple[str, str]]) -> np.ndarray:
         w = self.w
+        f = self.features(state, instructions, kind, opts)
+        h = gelu(f @ w["mlp.0.weight"].T + w["mlp.0.bias"])
+        h = gelu(h @ w["mlp.2.weight"].T + w["mlp.2.bias"])
+        return (h @ w["mlp.4.weight"].T + w["mlp.4.bias"])[:, 0]
+
+    def features(self, state: Any, instructions: Any, kind: str, opts: list[tuple[str, str]]) -> np.ndarray:
+        """The MLP input, one row per option: NF blocks of D features."""
+        w = self.w
         st = _content(state)
         s = self._pool(st)
         q = self._pool(_content(instructions)) + w["kind.weight"][KINDS[kind]]
@@ -101,10 +109,7 @@ class StaticModel:
         if self.kv:
             kv, kvo = self._kv(st, o)
             feats += [kv * o, kv * q * o, kvo, kvo * q]
-        f = np.concatenate([np.broadcast_to(x, o.shape) for x in feats], -1)
-        h = gelu(f @ w["mlp.0.weight"].T + w["mlp.0.bias"])
-        h = gelu(h @ w["mlp.2.weight"].T + w["mlp.2.bias"])
-        return (h @ w["mlp.4.weight"].T + w["mlp.4.bias"])[:, 0]
+        return np.concatenate([np.broadcast_to(x, o.shape) for x in feats], -1)
 
     def probs(self, state, instructions, kind, opts) -> np.ndarray:
         t = float(self.cfg.get("temperature_by_kind", {}).get(kind, 1.0))

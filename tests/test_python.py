@@ -22,7 +22,7 @@ def robot():
 
 
 def test_bundled_models():
-    assert {"sparrow-nano-general-v1.0", "sparrow-nano-robot-v1.0"} <= set(available_models())
+    assert {"sparrow-nano-general-v1.1", "sparrow-nano-robot-v1.1"} <= set(available_models())
 
 
 def test_unknown_model_is_a_clear_error():

@@ -1,0 +1,7 @@
+{
+ "model": "sparrow-nano-specs-h128",
+ "bench": "rover-zero-training",
+ "n": 600,
+ "action_vs_rules": 0.6,
+ "need_charge_vs_rules": 0.812
+}

@@ -1,0 +1,205 @@
+/*
+ * Sparrow Decider design tokens  (v0.2.0)
+ * Source of truth: site/brand/BRAND.md
+ *
+ * Dark is the default. Light applies when:
+ *   - <html data-theme="light">, or
+ *   - the OS prefers light and the page has not forced data-theme="dark".
+ *
+ * Fonts (Google Fonts only), add to <head>:
+ *   <link rel="preconnect" href="https://fonts.googleapis.com">
+ *   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ *   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+ *
+ * Contrast ratios (WCAG 2.x) are noted next to text tokens, measured against
+ * --sd-bg / --sd-surface. AA body text needs 4.5, large text and UI 3.0.
+ */
+
+:root {
+  /* ---------- Brand constants (same in both themes) ---------- */
+  --sd-amber:  #FFB547;
+  --sd-coral:  #FF6B4A;
+  --sd-pink:   #FF3D8B;
+  --sd-violet: #8B5CF6;
+  --sd-cyan:   #22D3EE;
+  --sd-ink-900: #0B1020;
+  --sd-ink-800: #111832;
+  --sd-ink-700: #182046;
+  --sd-ink-600: #2A3560;
+  --sd-paper:  #F5F7FF;
+
+  /* The signature gradient. Use for the mark, hero accents, highlights. */
+  --sd-gradient-sunrise: linear-gradient(120deg, #FFB547 0%, #FF6B4A 35%, #FF3D8B 68%, #8B5CF6 100%);
+  /* Warm-only gradient for filled buttons: ink text stays >= 5.67:1 on every stop. */
+  --sd-gradient-cta: linear-gradient(120deg, #FFB547 0%, #FF6B4A 50%, #FF3D8B 100%);
+  /* Mark gradient, as used in the SVG logo (bottom-left violet -> top-right amber). */
+  --sd-gradient-mark: linear-gradient(45deg, #8B5CF6 0%, #FF3D8B 40%, #FF6B4A 72%, #FFB547 100%);
+  /* Cool accent, for code/terminal/"live" states. */
+  --sd-gradient-signal: linear-gradient(120deg, #22D3EE 0%, #8B5CF6 100%);
+
+  /* ---------- Typography ---------- */
+  --sd-font-display: "Sora", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sd-font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sd-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Fluid type scale (min at 360px, max at 1280px) */
+  --sd-text-xs:   0.75rem;                                  /* 12 */
+  --sd-text-sm:   0.875rem;                                 /* 14 */
+  --sd-text-base: 1rem;                                     /* 16 */
+  --sd-text-lg:   1.125rem;                                 /* 18 */
+  --sd-text-xl:   clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);   /* 20-24 */
+  --sd-text-2xl:  clamp(1.5rem, 1.2rem + 1.2vw, 2rem);      /* 24-32 */
+  --sd-text-3xl:  clamp(2rem, 1.5rem + 2vw, 3rem);          /* 32-48 */
+  --sd-text-hero: clamp(2.5rem, 1.6rem + 4.2vw, 5rem);      /* 40-80 */
+  --sd-text-stat: clamp(2.25rem, 1.7rem + 2.4vw, 3.5rem);   /* big numbers */
+  --sd-leading-tight: 1.05;
+  --sd-leading-snug: 1.25;
+  --sd-leading-body: 1.6;
+  --sd-tracking-display: -0.025em;
+  --sd-tracking-caps: 0.08em;
+
+  /* ---------- Shape ---------- */
+  --sd-radius-xs: 6px;
+  --sd-radius-sm: 10px;
+  --sd-radius-md: 14px;   /* inputs, code blocks */
+  --sd-radius-lg: 18px;   /* cards */
+  --sd-radius-xl: 28px;   /* hero panels */
+  --sd-radius-pill: 999px;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --sd-space-1: 4px;  --sd-space-2: 8px;  --sd-space-3: 12px; --sd-space-4: 16px;
+  --sd-space-5: 24px; --sd-space-6: 32px; --sd-space-7: 48px; --sd-space-8: 64px;
+  --sd-space-9: 96px; --sd-space-10: 128px;
+  --sd-container: 1200px;
+  --sd-gutter: 16px;
+
+  /* ---------- Motion ---------- */
+  --sd-ease-out: cubic-bezier(0.22, 1, 0.36, 1);      /* default: arrive and settle */
+  --sd-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* loops, gradient drift */
+  --sd-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);/* tiny pops only (copy confirm) */
+  --sd-dur-instant: 90ms;   /* hover colour, press */
+  --sd-dur-fast: 160ms;     /* buttons, tooltips */
+  --sd-dur-base: 240ms;     /* panels, tabs */
+  --sd-dur-slow: 480ms;     /* section reveal */
+  --sd-dur-ambient: 18s;    /* background gradient drift */
+
+  /* ---------- Dark theme (default) ---------- */
+  color-scheme: dark;
+  --sd-bg: #0B1020;            /* deep ink */
+  --sd-surface: #111832;       /* cards, nav */
+  --sd-surface-2: #182046;     /* raised, hover, code blocks */
+  --sd-border: #2A3560;        /* 1.6:1 vs bg, decorative only */
+  --sd-border-strong: #3A4777;
+  --sd-text: #F5F7FF;          /* 17.70 bg / 16.35 surface */
+  --sd-text-muted: #A9B3D6;    /*  9.11 bg /  8.42 surface */
+  --sd-text-subtle: #8C96BD;   /*  6.50 bg /  6.01 surface: captions, footer */
+  --sd-accent: #22D3EE;        /* 10.48 bg: links, focus, "live" */
+  --sd-accent-text: #22D3EE;
+  --sd-highlight: #FFB547;     /* 10.78 bg: inline numbers */
+  --sd-violet-text: #A78BFA;   /*  6.96 bg: use instead of #8B5CF6 (4.47) for text */
+  --sd-success: #34D399;       /*  9.85 bg */
+  --sd-danger: #FF5D73;        /*  6.37 bg */
+  --sd-on-cta: #0B1020;        /* text on --sd-gradient-cta: >= 5.67 */
+  --sd-on-accent: #0B1020;     /* text on cyan: 10.48 */
+  --sd-gradient-text: linear-gradient(100deg, #FFB547 0%, #FF6B4A 35%, #FF3D8B 68%, #A78BFA 100%);
+  --sd-focus-ring: 0 0 0 2px var(--sd-bg), 0 0 0 4px #22D3EE;
+  --sd-glow: radial-gradient(60% 60% at 80% 10%, rgba(255, 61, 139, 0.28) 0%, rgba(139, 92, 246, 0.10) 50%, transparent 100%),
+             radial-gradient(40% 50% at 100% 70%, rgba(255, 181, 71, 0.14) 0%, transparent 100%),
+             radial-gradient(40% 50% at 0% 100%, rgba(34, 211, 238, 0.10) 0%, transparent 100%);
+  --sd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sd-shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  --sd-shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  --sd-shadow-glow: 0 10px 40px -10px rgba(255, 61, 139, 0.55);
+  --sd-code-bg: #0E1430;
+  --sd-code-text: #E3E8FF;
+  --sd-selection: rgba(255, 61, 139, 0.35);
+}
+
+/* ---------- Light theme ---------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --sd-bg: #FAFBFF;
+  --sd-surface: #FFFFFF;
+  --sd-surface-2: #F1F3FB;
+  --sd-border: #DDE2F2;        /* decorative only */
+  --sd-border-strong: #C9D0E6;
+  --sd-text: #0B1020;          /* 18.31 bg / 18.93 surface */
+  --sd-text-muted: #3B4468;    /*  9.18 bg */
+  --sd-text-subtle: #5A6389;   /*  5.67 bg */
+  --sd-accent: #0E7490;        /*  5.18 bg: cyan cannot be text on white (1.6) */
+  --sd-accent-text: #0E7490;
+  --sd-highlight: #B45309;     /*  4.86 bg */
+  --sd-violet-text: #6D28D9;   /*  6.87 bg */
+  --sd-success: #047857;       /*  5.30 bg */
+  --sd-danger: #BE123C;        /*  6.08 bg */
+  --sd-on-cta: #0B1020;
+  --sd-on-accent: #FFFFFF;     /* white on #0E7490: 5.36 */
+  --sd-gradient-text: linear-gradient(100deg, #C2410C 0%, #BE185D 55%, #6D28D9 100%); /* every stop >= 5.01 */
+  --sd-focus-ring: 0 0 0 2px var(--sd-bg), 0 0 0 4px #0E7490;
+  --sd-glow: radial-gradient(60% 60% at 80% 10%, rgba(255, 61, 139, 0.14) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 100%),
+             radial-gradient(40% 50% at 100% 70%, rgba(255, 181, 71, 0.16) 0%, transparent 100%),
+             radial-gradient(40% 50% at 0% 100%, rgba(34, 211, 238, 0.10) 0%, transparent 100%);
+  --sd-shadow-sm: 0 1px 2px rgba(11, 16, 32, 0.06);
+  --sd-shadow-md: 0 8px 24px -10px rgba(11, 16, 32, 0.14), 0 0 0 1px rgba(11, 16, 32, 0.04);
+  --sd-shadow-lg: 0 24px 64px -20px rgba(11, 16, 32, 0.22), 0 0 0 1px rgba(11, 16, 32, 0.05);
+  --sd-shadow-glow: 0 10px 36px -12px rgba(255, 61, 139, 0.45);
+  --sd-code-bg: #0B1020;       /* code blocks stay dark in both themes */
+  --sd-code-text: #E3E8FF;
+  --sd-selection: rgba(255, 61, 139, 0.22);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --sd-bg: #FAFBFF;
+    --sd-surface: #FFFFFF;
+    --sd-surface-2: #F1F3FB;
+    --sd-border: #DDE2F2;
+    --sd-border-strong: #C9D0E6;
+    --sd-text: #0B1020;
+    --sd-text-muted: #3B4468;
+    --sd-text-subtle: #5A6389;
+    --sd-accent: #0E7490;
+    --sd-accent-text: #0E7490;
+    --sd-highlight: #B45309;
+    --sd-violet-text: #6D28D9;
+    --sd-success: #047857;
+    --sd-danger: #BE123C;
+    --sd-on-cta: #0B1020;
+    --sd-on-accent: #FFFFFF;
+    --sd-gradient-text: linear-gradient(100deg, #C2410C 0%, #BE185D 55%, #6D28D9 100%);
+    --sd-focus-ring: 0 0 0 2px var(--sd-bg), 0 0 0 4px #0E7490;
+    --sd-glow: radial-gradient(60% 60% at 80% 10%, rgba(255, 61, 139, 0.14) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 100%),
+               radial-gradient(40% 50% at 100% 70%, rgba(255, 181, 71, 0.16) 0%, transparent 100%),
+               radial-gradient(40% 50% at 0% 100%, rgba(34, 211, 238, 0.10) 0%, transparent 100%);
+    --sd-shadow-sm: 0 1px 2px rgba(11, 16, 32, 0.06);
+    --sd-shadow-md: 0 8px 24px -10px rgba(11, 16, 32, 0.14), 0 0 0 1px rgba(11, 16, 32, 0.04);
+    --sd-shadow-lg: 0 24px 64px -20px rgba(11, 16, 32, 0.22), 0 0 0 1px rgba(11, 16, 32, 0.05);
+    --sd-shadow-glow: 0 10px 36px -12px rgba(255, 61, 139, 0.45);
+    --sd-code-bg: #0B1020;
+    --sd-code-text: #E3E8FF;
+    --sd-selection: rgba(255, 61, 139, 0.22);
+  }
+}
+
+/* Optional explicit dark override (useful when the OS is light). */
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sd-dur-instant: 0ms;
+    --sd-dur-fast: 0ms;
+    --sd-dur-base: 0ms;
+    --sd-dur-slow: 0ms;
+    --sd-dur-ambient: 0s;
+  }
+}
+
+/* ---------- Helper classes (optional) ---------- */
+.sd-gradient-text {
+  background: var(--sd-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

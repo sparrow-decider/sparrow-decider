@@ -14,7 +14,7 @@ from . import Decider, __version__, available_models
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="sparrow-decider")
     ap.add_argument("--version", action="version", version=f"sparrow-decider {__version__}")
-    ap.add_argument("--model", help="model name (e.g. nano-robot) or .sparrow file; default sparrow-nano-general-v1.0")
+    ap.add_argument("--model", help="model name (e.g. nano-robot) or .sparrow file; default sparrow-nano-general-v1.1")
     sub = ap.add_subparsers(dest="cmd", required=True)
     a1 = sub.add_parser("ask", help="answer one question")
     a1.add_argument("state")

@@ -11,7 +11,7 @@ pip install sparrow-decider            # or, from a clone: pip install -e .
 ```python
 from sparrow_decider import Decider
 
-d = Decider.load()   # sparrow-nano-general-v1.0, bundled
+d = Decider.load()   # sparrow-nano-general-v1.1, bundled
 
 answers = d.ask(
     "User: I was charged twice for order 1182 and nobody replied to my email.",
@@ -41,7 +41,7 @@ There are three question types. The answers have the same shapes as
 ```python
 from sparrow_decider import Decider, available_models
 
-print(available_models())            # ['sparrow-nano-general-v1.0', 'sparrow-nano-robot-v1.0', ...]
+print(available_models())            # ['sparrow-nano-general-v1.1', 'sparrow-nano-robot-v1.1', ...]
 robot = Decider.load("nano-robot")    # names can be short
 micro = Decider.load("path/to/sparrow-micro-general-v1.1.sparrow")
 ```

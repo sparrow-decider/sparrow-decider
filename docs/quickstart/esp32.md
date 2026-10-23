@@ -1,7 +1,7 @@
 # Quickstart: ESP32-S3 (sparrow-nano on a microcontroller)
 
 The C runtime reads a packed model straight from flash. It needs no malloc and about 68 KB of static
-working memory. With `sparrow-nano-robot-v1.0` the whole example firmware is 1.84 MB of flash.
+working memory. With `sparrow-nano-robot-v1.1` the whole example firmware is 1.84 MB of flash.
 
 ## Hardware
 
@@ -18,7 +18,7 @@ working memory. With `sparrow-nano-robot-v1.0` the whole example firmware is 1.8
 
 # 2. pack a model into the example
 pip install -e .                      # for the packer
-python c/tools/pack.py python/sparrow_decider/models/sparrow-nano-robot-v1.0.sparrow \
+python c/tools/pack.py python/sparrow_decider/models/sparrow-nano-robot-v1.1.sparrow \
     -o c/examples/esp32s3_robot/main/model.spb
 
 # 3. build, flash, watch

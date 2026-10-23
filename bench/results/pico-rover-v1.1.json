@@ -1,0 +1,58 @@
+{
+ "model": "sparrow-pico-rover-v1.1",
+ "bench": "pico",
+ "teacher": "strands-decider-2B-qwen3.5-v1-2610 (public)",
+ "hidden": 16,
+ "build": {
+  "spec": "rover",
+  "states": 3000,
+  "train": 2400,
+  "test": 600,
+  "questions": {
+   "action": {
+    "type": "choice",
+    "teacher_agreement": 0.9767,
+    "mean_abs_prob_diff": 0.0221,
+    "params": 501,
+    "bytes_f32": 2004
+   },
+   "need_charge": {
+    "type": "noul",
+    "teacher_agreement": 0.9983,
+    "mean_abs_prob_diff": 0.0104,
+    "params": 450,
+    "bytes_f32": 1800
+   },
+   "risk": {
+    "type": "score",
+    "teacher_agreement": 0.9367,
+    "mean_abs_prob_diff": 0.0078,
+    "params": 484,
+    "bytes_f32": 1936
+   }
+  },
+  "header": "runs/pico-rover-h16/out/sparrow_pico_rover.h"
+ },
+ "rules": {
+  "action": {
+   "n": 600,
+   "teacher_vs_rules": 0.942,
+   "pico_vs_rules": 0.94
+  },
+  "need_charge": {
+   "n": 600,
+   "teacher_vs_rules": 0.99,
+   "pico_vs_rules": 0.992
+  }
+ },
+ "c_parity": {
+  "calls": 1500,
+  "max_abs_diff": 8e-07,
+  "argmax_agree": "1500/1500",
+  "ns_per_call_host": 183.3
+ },
+ "esp32s3_us_per_decision": {
+  "argmax": 9.292,
+  "probabilities": 14.263
+ }
+}

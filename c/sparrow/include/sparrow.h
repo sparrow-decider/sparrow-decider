@@ -29,6 +29,9 @@ extern "C" {
 #ifndef SPARROW_MAX_OPTIONS
 #define SPARROW_MAX_OPTIONS 16
 #endif
+#ifndef SPARROW_BATCH
+#define SPARROW_BATCH 8          /* options scored per pass over the MLP weights */
+#endif
 #define SPARROW_MAX_PAIRS 16     /* fixed by the model format: key-value pairs read per state */
 #ifndef SPARROW_INT8_ACT
 #define SPARROW_INT8_ACT 0       /* 1 = int8 activations in the MLP (int8 x int8 dot products) */
@@ -56,6 +59,7 @@ typedef struct {
     const uint32_t *str_off, *str_id;
     const int8_t *emb;
     const float *emb_scale, *kind, *g_w, *g_b, *tau;
+    const float *gain; /* per feature block, or NULL (blob flag bit1) */
     const int8_t *w0, *w2;
     const float *s0, *b0, *s2, *b2, *w4, *b4;
 } sparrow_model;
@@ -66,15 +70,23 @@ typedef struct {
     float o[SPARROW_MAX_OPTIONS][SPARROW_MAX_DIM];
     float pv[SPARROW_MAX_PAIRS][SPARROW_MAX_DIM], el[SPARROW_MAX_PAIRS][SPARROW_MAX_DIM];
     float kvo[SPARROW_MAX_DIM];
-    float feat[10 * SPARROW_MAX_DIM];
-    float h0[SPARROW_MAX_HIDDEN], h1[SPARROW_MAX_HIDDEN];
+    float feat[SPARROW_BATCH][10 * SPARROW_MAX_DIM];
+    float h0[SPARROW_BATCH][SPARROW_MAX_HIDDEN];
 #if SPARROW_INT8_ACT
-    int8_t fq[10 * SPARROW_MAX_DIM], hq[SPARROW_MAX_HIDDEN];
+    /* 16-byte aligned for SIMD dot products */
+    int8_t fq[SPARROW_BATCH][10 * SPARROW_MAX_DIM] __attribute__((aligned(16)));
+    int8_t hq[SPARROW_BATCH][SPARROW_MAX_HIDDEN] __attribute__((aligned(16)));
 #endif
     char buf[512]; /* option text "name desc" and kv keys are pooled from here */
 } sparrow_ctx;
 
 sparrow_status sparrow_load(sparrow_model *m, const void *blob, size_t len);
+
+/* Bytes needed to hold the MLP weights (the part read on every question). */
+size_t sparrow_mlp_bytes(const sparrow_model *m);
+/* Copy the MLP weights into `dst` (16-byte aligned, sparrow_mlp_bytes() long), e.g. fast internal
+ * RAM on a microcontroller, and use them from there. The rest of the model stays where it is. */
+sparrow_status sparrow_move_mlp(sparrow_model *m, void *dst, size_t len);
 
 /* Probabilities over the options, in the order given. For SPARROW_NOUL pass opts = NULL and
  * n_opts = 0 to use the default false/true options; probs[1] is P(true). */

@@ -13,7 +13,7 @@ MODELS = os.path.join(ROOT, "python", "sparrow_decider", "models")
 pytestmark = pytest.mark.skipif(shutil.which("cc") is None, reason="needs a C compiler")
 
 
-@pytest.mark.parametrize("model", ["sparrow-nano-general-v1.0", "sparrow-nano-robot-v1.0"])
+@pytest.mark.parametrize("model", ["sparrow-nano-general-v1.1", "sparrow-nano-robot-v1.1"])
 def test_c_matches_numpy(model, tmp_path):
     out = tmp_path / "parity.json"
     subprocess.run([sys.executable, os.path.join(ROOT, "c/tests/parity.py"), os.path.join(MODELS, model + ".sparrow"),

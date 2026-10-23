@@ -12,3 +12,6 @@ Unofficial community project. Not an AWS or Strands product.
 
 bench/massive/*.jsonl are derived from Amazon MASSIVE 1.1 (en-US test split), Copyright Amazon.com,
 Inc. or its affiliates, licensed CC BY 4.0. https://github.com/alexa/massive
+
+c/sparrow/port/esp32s3/esp_nn_dot_s8_esp32s3.S is from ESP-NN (https://github.com/espressif/esp-nn),
+Copyright Espressif Systems (Shanghai) CO LTD, licensed Apache-2.0.

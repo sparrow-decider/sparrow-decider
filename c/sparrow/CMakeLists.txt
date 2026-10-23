@@ -1,8 +1,15 @@
 # Sparrow Decider C runtime. Works as an ESP-IDF component (add this directory to
 # EXTRA_COMPONENT_DIRS) and as a plain CMake library elsewhere.
 if(ESP_PLATFORM)
-  idf_component_register(SRCS "src/sparrow.c" INCLUDE_DIRS "include")
+  set(srcs "src/sparrow.c")
+  if(CONFIG_IDF_TARGET_ESP32S3)
+    list(APPEND srcs "port/esp32s3/sparrow_dot_esp32s3.c" "port/esp32s3/esp_nn_dot_s8_esp32s3.S")
+  endif()
+  idf_component_register(SRCS ${srcs} INCLUDE_DIRS "include")
   target_compile_options(${COMPONENT_LIB} PRIVATE -O2 -ffast-math)
+  if(CONFIG_IDF_TARGET_ESP32S3)
+    target_compile_definitions(${COMPONENT_LIB} PRIVATE SPARROW_DOT_PORT=1)
+  endif()
 else()
   cmake_minimum_required(VERSION 3.16)
   project(sparrow C)

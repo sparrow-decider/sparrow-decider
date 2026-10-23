@@ -1,0 +1,13 @@
+{
+ "model": "sparrow-pico-rover-v1.0",
+ "bench": "esp32s3-pico",
+ "variant": "k2-fastmath",
+ "cpu_mhz": 240,
+ "probs_cycles": 10929,
+ "logits_cycles": 9640,
+ "argmax_cycles": 9672,
+ "probs_us": 45.538,
+ "logits_us": 40.167,
+ "argmax_us": 40.3,
+ "agree": "256/256"
+}

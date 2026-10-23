@@ -100,9 +100,12 @@ See `bench/RESULTS.md` for the current tables. Findings so far are in section 6.
 | sparrow-small-general-v1.0 | 47 MB | 24/55 | 0.673 / 0.599 | 122 | 64 ms numpy |
 | sparrow-tiny-general-v1.0 | 17.9 MB | 20/55 | 0.368 / 0.592 | 123 | 23 ms numpy |
 | sparrow-micro-general-v1.1 | 7.6 MB | 30/55 | 0.635 / 0.542 | 117 | 0.22 ms C |
-| sparrow-nano-robot-v1.0 | 1.37 MB | 40/55 | 0.520 / 0.494 | 113 | 0.12 ms C |
-| sparrow-nano-general-v1.0 | 2.33 MB | 33/55 | 0.557 / 0.572 | 123 | 0.12 ms C |
-| sparrow-pico-rover-v1.0 | 6 KB per question | rover spec: 94.3% action, 99.8% charge vs rules | n/a | n/a | 0.2 us C |
+| sparrow-nano-robot-v1.0 | 1.37 MB | 40/55 | 0.520 / 0.494 | 113 | 0.12 ms C; 13.2 ms ESP32-S3 |
+| sparrow-nano-robot-v1.1 | 1.19 MB | 38/55 | 0.515 / 0.485 | 105 | 0.09 ms C; 7.6 ms ESP32-S3 |
+| sparrow-nano-robot-v1.2 | 1.11 MB | 36/55 | 0.518 / 0.522 | 115 | 3.5 ms ESP32-S3 |
+| sparrow-nano-general-v1.0 | 2.33 MB | 33/55 | 0.557 / 0.572 | 123 | 0.12 ms C; 9.6 ms ESP32-S3 |
+| sparrow-nano-general-v1.1 | 2.2 MB | 32/55 | 0.500 / 0.588 | 122 | 0.06 ms C; 3.8 ms ESP32-S3 |
+| sparrow-pico-rover-v1.1 | ~2 KB per question | rover spec: 94.0% action, 99.2% charge vs rules | n/a | n/a | 0.18 us C; 9.3 us ESP32-S3 |
 
 ### 6.2 What we learned
 
@@ -128,7 +131,7 @@ See `bench/RESULTS.md` for the current tables. Findings so far are in section 6.
      0.86 on domain routing).
    - Bag-of-embeddings models cannot read word order, and 1-8 MB cannot hold the 2B's breadth.
 5. **Compiling beats generalising on a microcontroller.**
-   - When the questions and sensor schema are fixed, a 1,500-parameter MLP distilled from the 2B
+   - When the questions and sensor schema are fixed, a 1,500-parameter MLP (501 in v1.1) distilled from the 2B
      matches the 2B's own accuracy against the stated rules: 94.3% vs 94.2% on the action question,
      and 99.8% vs 99.0% on the charging question.
    - That is about 230x smaller than nano per question, and over a million times fewer parameters than the
@@ -146,9 +149,47 @@ See `bench/RESULTS.md` for the current tables. Findings so far are in section 6.
 - RobotBench has 55 items, so one item is 1.8 points; seed-to-seed spread is up to 4 items.
 - RobotBench and the robot generator were written by the same author, from different templates.
   MASSIVE is the independent check, and it shows the gap.
-- Microcontroller timings so far come from Espressif's QEMU, which does not model real timing.
-  Real ESP32-S3 numbers are pending hardware.
+- Microcontroller timings come from one ESP32-S3 board. QEMU timings were misleading: about 17 ms where
+  the real first run was 73.5 ms.
 - JevBench figures are local proxy scores on the public tasks, not leaderboard results.
+
+### 6.4 On a real ESP32-S3
+
+The board: ESP32-S3 QFN56 rev 0.2, 240 MHz, 16 MB flash, 8 MB PSRAM. The bench runs 155 decisions
+(RobotBench and 100 MASSIVE intent cases) and checks every answer against the host runtime
+(`bench/esp32/run.py`, results in `bench/results/esp32-*.json`).
+
+1. **Profile.** On-chip cycle counters show the MLP's first layer is about 80% of the time. Text
+   handling (tokenising and embedding lookups) is about 1 ms.
+2. **Ladder for nano-robot v1.0** (p50):
+   - 73.5 ms float, one option at a time
+   - 55.4 ms with options batched, so each weight row is read once per question
+   - 24.1 ms with int8 SIMD (ESP-NN dot kernel)
+   - 20.7 ms with a 64 KB data cache
+   - 13.2 ms with the model in PSRAM
+   - Plain-C int8 without the vector unit was slower than float (90.9 ms).
+3. **Smaller MLPs.** Halving the hidden layer and keeping the MLP in internal RAM:
+   - nano-general v1.1: 3.8 ms, with block-balanced int8 (one scale per row).
+   - nano-robot v1.1: 7.6 ms.
+   - nano-robot v1.2 (64 hidden): 3.5 ms. RobotBench drops by 2 or 4 points against v1.1 and v1.0.
+4. **pico.** 42.9 µs became 9.3 µs:
+   - an argmax path with no softmax
+   - four accumulators to hide FPU latency
+   - 16 hidden units, with accuracy against the rules within 0.3 points
+   - `-O3`
+5. **Agreement with the host.** On-chip answers match the host on 150-155 of 155. The mismatches are
+   int8 rounding near ties.
+
+### 6.5 A negative result: zero-training device decisions
+
+- **Goal:** answer a device spec with no per-device training by training a shared nano on 80k
+  random-device rows where each option states its trigger ("dock: go charge when battery below 15%").
+- **Result:** the models learned the format but not the comparison.
+  - Held-out random devices: 34-44% action accuracy.
+  - The rover spec: 39-60%, against 94% for pico.
+- **Why:** nano reads option text as a bag of words, so the threshold "15%" is a token, not a number it can
+  compare.
+- **Next step:** parse thresholds out of option text into the same key-value number features.
 
 ## 7. Credits
 

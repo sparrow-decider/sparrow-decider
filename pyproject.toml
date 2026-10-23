@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sparrow-decider"
-version = "0.1.0"
+version = "0.2.0"
 description = "Decision models from 47 MB down to a few KB: yes/no, pick-one and score questions in milliseconds on CPU and microcontrollers. numpy only."
 readme = "README.md"
 requires-python = ">=3.10"

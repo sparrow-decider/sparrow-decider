@@ -1,7 +1,7 @@
 # Quickstart: compile a decision with sparrow-pico
 
 Use pico when your device's inputs are sensor values and its questions are known at build time.
-For each question you get a small C function with no dependencies, about 6 KB in size. It is
+For each question you get a small C function with no dependencies, about 2 KB in size (501 parameters for the rover example). It is
 distilled from a full Strands Decider, so it inherits that model's judgement for your device.
 
 ## 1. Write a spec

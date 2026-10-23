@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact · Sparrow Decider</title>
+<meta name="description" content="Questions, bugs and results from your hardware: GitHub Discussions and Issues.">
+<link rel="canonical" href="https://sparrow-decider.github.io/sparrow-decider/contact/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sparrow Decider">
+<meta property="og:title" content="Contact · Sparrow Decider">
+<meta property="og:description" content="Questions, bugs and results from your hardware: GitHub Discussions and Issues.">
+<meta property="og:url" content="https://sparrow-decider.github.io/sparrow-decider/contact/">
+<meta property="og:image" content="https://sparrow-decider.github.io/sparrow-decider/assets/img/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sparrow Decider: 9.3 µs per decision on a $10 ESP32-S3">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B1020">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var q=/[?&]theme=(light|dark)/.exec(location.search),t=q?q[1]:localStorage.getItem("sd-theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t)}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/tokens.css?v=0.2.0">
+<link rel="stylesheet" href="../assets/styles.css?v=0.2.0">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="sr-status" class="sr-only" aria-live="polite"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Sparrow Decider home"><img src="../assets/img/mark.svg" alt="" width="28" height="28"><span class="wm">Sparrow <span>Decider</span></span></a>
+    <span class="ver-pill">v0.2.0</span>
+    <nav class="nav" aria-label="Primary"><a href="../models/">Models</a><a href="../architecture/">Architecture</a><a href="../benchmarks/">Benchmarks</a><a href="../contact/" aria-current="page">Contact</a></nav>
+    <div class="header-actions">
+      <a class="hdr-docs" href="https://github.com/sparrow-decider/sparrow-decider/tree/main/docs/quickstart">Docs<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a>
+      <button class="icon-btn theme-toggle hdr-theme" type="button" aria-label="Switch to light theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <a class="icon-btn" href="https://github.com/sparrow-decider/sparrow-decider" aria-label="Sparrow Decider on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+      <button class="copy-btn hdr-copy" type="button" data-copy="pip install sparrow-decider" data-label="pip install" aria-label="Copy pip install sparrow-decider"><svg class="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="label">pip install</span></button>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line class="b1" x1="4" y1="7" x2="20" y2="7"/><line class="b2" x1="4" y1="12" x2="20" y2="12"/><line class="b3" x1="4" y1="17" x2="20" y2="17"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="menu-sheet" id="site-menu" hidden>
+  <div class="backdrop"></div>
+  <nav class="panel" aria-label="Menu">
+    <div class="main-links"><a href="../models/">Models</a><a href="../architecture/">Architecture</a><a href="../benchmarks/">Benchmarks</a><a href="../contact/" aria-current="page">Contact</a></div>
+    <div class="sub">
+      <a href="https://github.com/sparrow-decider/sparrow-decider/tree/main/docs/quickstart">Read the docs<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a>
+      <a href="https://github.com/sparrow-decider/sparrow-decider/releases">Download models<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a>
+      <a href="https://github.com/sparrow-decider/sparrow-decider">View on GitHub<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a>
+    </div>
+    <div class="copy"><span class="prompt" aria-hidden="true">$ </span><code>pip install sparrow-decider</code><button class="copy-btn" type="button" data-copy="pip install sparrow-decider" aria-label="Copy pip install sparrow-decider"><svg class="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="label">Copy</span></button></div>
+    <div class="theme-row"><span>Theme: <span class="theme-name">Dark</span></span><button class="theme-toggle" type="button" aria-label="Switch to light theme">Switch</button></div>
+  </nav>
+</div>
+<main id="main" tabindex="-1">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="g-sunrise" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB547"/><stop offset=".35" stop-color="#FF6B4A"/><stop offset=".68" stop-color="#FF3D8B"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0 10 5 0 10z"/></marker><marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-accent" d="M0 0 10 5 0 10z"/></marker></defs></svg>
+<section class="page-hero ph-contact"><div class="wrap"><span class="eyebrow">Contact</span><h1>Talk to the flock.</h1><p class="lede">Sparrow Decider is built in the open by the Sparrow Decider contributors. GitHub is the best place to reach us.</p></div></section>
+<section class="page-sec" style="padding-top:8px"><div class="wrap stack">
+<div class="contact-grid">
+<a class="lcard" href="https://github.com/sparrow-decider/sparrow-decider/discussions"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.5A8 8 0 1 1 21 12z"/></svg></span><h2>Questions and ideas</h2><p>Ask how to fit a decision to your device, share what you built, or post benchmark results from your hardware.</p><span class="go">Open Discussions <span class="arr" aria-hidden="true">→</span></span></a>
+<a class="lcard" href="https://github.com/sparrow-decider/sparrow-decider/issues"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg></span><h2>Bugs and requests</h2><p>Something wrong or missing? File an issue with your model ID, runtime (Python, C, ESP-IDF), your board, and the smallest input that shows the problem.</p><span class="go">Open an issue <span class="arr" aria-hidden="true">→</span></span></a>
+<a class="lcard wide" href="https://github.com/sparrow-decider/sparrow-decider/blob/main/CONTRIBUTING.md"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg></span><h2>Contribute</h2><p>Code is Apache-2.0. Read the contributing guide and the quickstarts on GitHub before opening a pull request.</p><span class="go">Read the contributing guide <span class="arr" aria-hidden="true">→</span></span></a>
+</div>
+<p class="muted" style="max-width:880px">Cite this work with <a class="text-link" style="min-height:0" href="https://github.com/sparrow-decider/sparrow-decider/blob/main/CITATION.cff">CITATION.cff<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a> in the repository. We do not offer paid support, and we do not collect email addresses on this site.</p>
+<div class="disc-block"><p>Unofficial community project. Not an AWS or Strands product.</p><p>For questions about Strands Decider itself, please use that project's own channels.</p></div>
+</div></section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <a class="brand" href="../" aria-label="Sparrow Decider home"><img src="../assets/img/mark.svg" alt="" width="28" height="28"><span class="wm">Sparrow <span>Decider</span></span></a>
+        <p>Decisions that fit on a chip.</p>
+        <p class="ver">v0.2.0 · Apache-2.0</p>
+        <div class="copy"><span class="prompt" aria-hidden="true">$ </span><code>pip install sparrow-decider</code><button class="copy-btn" type="button" data-copy="pip install sparrow-decider" aria-label="Copy pip install sparrow-decider"><svg class="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="label">Copy</span></button></div>
+      </div>
+      <div class="f-col"><h2>Product</h2><ul>
+        <li><a href="../models/">Models</a></li><li><a href="../architecture/">Architecture</a></li>
+        <li><a href="../benchmarks/">Benchmarks</a></li><li><a href="https://github.com/sparrow-decider/sparrow-decider/releases">Download models<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li></ul></div>
+      <div class="f-col"><h2>Developers</h2><ul>
+        <li><a href="https://github.com/sparrow-decider/sparrow-decider/tree/main/docs/quickstart">Read the docs<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li><li><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/python.md">Python<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li>
+        <li><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/esp32.md">ESP32-S3<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li><li><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/pico.md">sparrow-pico<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li>
+        <li><a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/quickstart/c.md">C library<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li></ul></div>
+      <div class="f-col"><h2>Community</h2><ul>
+        <li><a href="https://github.com/sparrow-decider/sparrow-decider">GitHub<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li><li><a href="https://github.com/sparrow-decider/sparrow-decider/discussions">Discussions<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li>
+        <li><a href="https://github.com/sparrow-decider/sparrow-decider/issues">Report an issue<svg class="ext" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2 2 10"/></svg></a></li><li><a href="../contact/">Contact</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <p class="disc">Unofficial community project. Not an AWS or Strands product.</p>
+      <p>Built by the Sparrow Decider contributors. Code under <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/LICENSE">Apache-2.0</a>; model weights derived from MIT-licensed potion-base-8M and Ettin encoders. Strands Decider is referenced for compatibility and comparison only. <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/NOTICE">NOTICE</a></p>
+      <p>Built on: potion-base-8M (MinishLab, MIT) · Ettin encoders (JHU CLSP, MIT) · Strands Decider (Apache-2.0) · ESP-NN (Espressif, Apache-2.0). Evaluation only: Amazon MASSIVE (CC BY 4.0) · JevBench (MIT).</p>
+      <p>No cookies, no tracking. © the Sparrow Decider contributors.</p>
+    </div>
+  </div>
+</footer>
+<script src="../assets/main.js?v=0.2.0" defer></script>
+</body>
+</html>
