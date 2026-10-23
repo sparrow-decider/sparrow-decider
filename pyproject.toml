@@ -26,7 +26,9 @@ dev = ["pytest"]
 train = ["torch>=2.4", "transformers>=4.46", "huggingface_hub", "model2vec", "pyarrow"]
 
 [project.urls]
-Homepage = "https://github.com/sparrow-decider/sparrow-decider"
+Homepage = "https://sparrowdecider.com"
+Source = "https://github.com/sparrow-decider/sparrow-decider"
+Issues = "https://github.com/sparrow-decider/sparrow-decider/issues"
 Documentation = "https://github.com/sparrow-decider/sparrow-decider/tree/main/docs"
 Changelog = "https://github.com/sparrow-decider/sparrow-decider/blob/main/CHANGELOG.md"
 

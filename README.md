@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sparrow-decider/sparrow-decider/main/site/brand/previews/og-image.png" alt="Sparrow Decider: decisions that fit on a chip. 9.3 µs per decision on an ESP32-S3." width="100%">
+  <img src="https://sparrowdecider.com/assets/img/og.png" alt="Sparrow Decider: decisions that fit on a chip. 9.3 µs per decision on an ESP32-S3." width="100%">
 </p>
 
 <p align="center">
