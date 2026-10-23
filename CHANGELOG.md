@@ -6,7 +6,7 @@
   - `sparrow-nano-general-v1.1` (128 hidden): 3.8 ms per decision on an ESP32-S3.
   - `sparrow-nano-robot-v1.1` (7.6 ms) and `sparrow-nano-robot-v1.2` (64 hidden, 3.5 ms).
   - `sparrow-pico-rover-v1.1` (16 hidden): 9.3 µs on an ESP32-S3.
-- **The pip package** bundles the v1.1 nanos.
+- **The pip package** bundles `sparrow-nano-general-v1.1` and `sparrow-nano-robot-v1.2`.
 - **C runtime:**
   - options are scored in batches
   - ESP32-S3 int8 SIMD port (ESP-NN dot kernel)

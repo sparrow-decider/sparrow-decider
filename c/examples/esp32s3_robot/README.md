@@ -5,6 +5,6 @@ and prints each answer with its time. Build steps, expected output and QEMU inst
 [docs/quickstart/esp32.md](../../../docs/quickstart/esp32.md).
 
 ```bash
-python ../../tools/pack.py ../../../python/sparrow_decider/models/sparrow-nano-robot-v1.1.sparrow -o main/model.spb
+python ../../tools/pack.py ../../../python/sparrow_decider/models/sparrow-nano-robot-v1.2.sparrow -o main/model.spb
 idf.py set-target esp32s3 && idf.py build flash monitor
 ```

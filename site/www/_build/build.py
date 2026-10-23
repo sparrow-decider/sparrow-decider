@@ -405,7 +405,7 @@ def speed_rows(cls_extra=""):
         bars = []
         for i, (v, lab) in enumerate(steps):
             last = i == len(steps) - 1
-            lab = lab or ("earlier build" if not last else "current release")
+            lab = lab or ("first build" if i == 0 else "today")
             w = to_us(v) / mx * 80
             bars.append(f'<div class="sbar{" last" if last else ""}"><span class="lbl">{E(lab)}</span><span class="trk"><span class="f" style="width:{w:.2f}%"></span>'
                         f'<span class="v" style="left:{w:.2f}%">{E(v)}</span></span></div>')
@@ -413,12 +413,12 @@ def speed_rows(cls_extra=""):
         out.append(f'<article class="card srow"><div class="srow-head"><h3>{E(title)}<small>{labels.get(key, "")}</small></h3><span class="scale">scale: 0 to {E(unit_max)}</span></div>{"".join(bars)}</article>')
         rows_tbl.append(f'<tr><td class="id">{E(title)}</td><td>{E(val.replace("->", "→"))}</td></tr>')
     table = ('<details class="tbl"><summary>Show as table</summary><div class="table-wrap" role="region" aria-label="On-chip speedups" tabindex="0"><table class="data mid">'
-             '<thead><tr><th>Model</th><th>Time per decision on ESP32-S3, earlier to current</th></tr></thead><tbody>' + "".join(rows_tbl) + "</tbody></table></div></details>")
-    legend = '<ul class="legend" aria-hidden="true"><li><i class="lg-ref"></i>earlier builds</li><li><i class="lg-ours"></i>current release</li></ul>'
+             '<thead><tr><th>Model</th><th>Time per decision on ESP32-S3, first build to today</th></tr></thead><tbody>' + "".join(rows_tbl) + "</tbody></table></div></details>")
+    legend = '<ul class="legend" aria-hidden="true"><li><i class="lg-ref"></i>first on-chip build</li><li><i class="lg-ours"></i>today</li></ul>'
     summary = "; ".join(f'sparrow-{k} {v.replace("->", "to")}' for k, v in F["speedups_on_esp32s3"].items())
     return (f'<figure class="chart-fig" style="margin:0">{legend}<div class="speed-rows anim {cls_extra}" aria-hidden="true">' + "".join(out) + '</div>'
             f'<figcaption class="sr-only">Time per decision on the ESP32-S3: {E(summary)}.</figcaption>'
-            f'<p class="scale-note">Each row has its own scale. Board: {E(F["board"])}.</p>{table}</figure>')
+            f'<p class="scale-note">{E(F.get("speedups_note", ""))} Each row has its own scale. Board: {E(F["board"])}.</p>{table}</figure>')
 
 
 def limits_cards():
@@ -529,7 +529,7 @@ def home():
   </div>
 </section>'''
 
-    stats = "".join(f'<div class="stat"><dt>{E(h["label"])}</dt><dd>{E(h["value"]).replace(" ", "&nbsp;") if h["value"][:1].isdigit() else E(h["value"])}</dd></div>' for h in F["headline_numbers"])
+    stats = "".join(f'<div class="stat"><dt>{E(h["label"])}</dt><dd>{E(h["value"]).replace(" ", "&nbsp;") if any(c.isdigit() for c in h["value"]) else E(h["value"])}</dd></div>' for h in F["headline_numbers"])
     numbers = f'''<section class="numbers" id="numbers" aria-labelledby="numbers-title">
   <div class="wrap">
     <div class="numbers-head"><h2 id="numbers-title">Numbers first.</h2><p>Measured on an ESP32-S3 at 240 MHz and on a laptop. Every figure is on the Benchmarks page with its conditions.</p></div>
@@ -657,13 +657,12 @@ def home():
 </section>'''
 
     # on chip
-    pc = F["headline_numbers"][4]
     chip_sec = f'''<section class="section" id="on-chip" aria-labelledby="chip-title">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">On the chip</span><h2 id="chip-title">Every release got faster.</h2><p>{E(F["how_it_works"][3])}</p></div>
+    <div class="sec-head reveal"><span class="eyebrow">On the chip</span><h2 id="chip-title">Same $10 board. Much faster.</h2><p>{E(F["how_it_works"][3])}</p></div>
     {speed_rows()}
     <div class="strip">
-      <div class="card"><div class="big">{E(pc["value"])}</div><p>{E(pc["label"])}</p></div>
+      <div class="card"><h3>Parity</h3><p>{E(F["parity"])}</p></div>
       <div class="card"><h3>Python</h3><p><code>{E(F["install"])}</code>. numpy only.</p></div>
       <div class="card"><h3>C99</h3><p>No malloc, model read from flash. Ships as an ESP-IDF component.</p></div>
       <div class="card"><h3>sparrow-pico compiler</h3><p>Write a device spec, get a C header.</p></div>
@@ -728,11 +727,8 @@ def models():
     bodies = {
         pico["id"]: f'Numbers in, decision out. You write a spec of sensors, flags, enums, rules and questions, and the compiler writes one tiny MLP per question as a C header. It answers only the questions it was compiled for.',
         ng["id"]: f'Reads text and answers in {E(short_time(ng["esp32s3"]))} on an ESP32-S3. Good for routing and gating inside an agent when you want no network call.',
-        nr["id"]: f'Reads states like <code>battery: 6%</code> as values, not words. Ships with pip. The earlier v1.0 (1.37 MB) scores 40/55 on RobotBench, the same as the public 2B.',
+        nr["id"]: f'Reads states like <code>battery: 6%</code> as values, not words, and ships with pip. {E(short_time(nr["esp32s3"]))} per decision on an ESP32-S3.',
     }
-    for t in F["tiers"]:
-        if "nano-robot" in t["id"] and t["id"] != nr["id"]:
-            bodies[t["id"]] = f'The fastest robot nano: {E(short_time(t["esp32s3"]))} per decision on an ESP32-S3. Reads <code>battery: 6%</code> as a value. Download it from the releases page.' if "fastest" in t.get("quality", "") else "Reads states like <code>battery: 6%</code> as values, not words."
     acts = {
         pico["id"]: ext_link(L["pico"], "Read the pico guide"),
         ng["id"]: ext_link(L["esp32"], "Read the ESP32-S3 guide") + ext_link(L["releases"], "Download"),
@@ -914,7 +910,7 @@ def architecture():
 <li class="layer accent"><h3>Memory placement</h3><span class="d">weights in PSRAM / internal RAM</span></li>
 <li class="layer hw"><h3>ESP32-S3</h3><span class="d">{E(mhz)} · {E(flash)} · {E(psram)}</span></li></ol>'''
     esp = (f'<div class="esp-layout"><div>{layers}<p class="mono-line" style="margin-top:14px">{E(F["board"])}</p>'
-           f'<p class="lead-para" style="margin:14px 0 0">On-chip answers matched the host runtime <strong class="nw">{E(F["headline_numbers"][4]["value"])}</strong>.</p>'
+           f'<p class="lead-para" style="margin:14px 0 0">{E(F["parity"])}</p>'
            f'<p style="margin:8px 0 0">{ext_link(L["esp32"], "Flash it yourself")}</p></div><div>{speed_rows()}</div></div>')
     rt = table([("Runtime", ""), ("What you get", "")],
                ['<tr><td><strong>Python</strong></td><td>numpy only</td></tr>', '<tr><td><strong>C99</strong></td><td>no malloc, model read from flash, ESP-IDF component</td></tr>',
@@ -940,19 +936,20 @@ REF4, REF2 = "Strands Decider 4B (teacher)", "Strands Decider 2B (public)"
 BENCH = {
     # RobotBench v0: name, right/55, skill/15, nav/10, check/12, recover/10, urgency/8, ref
     "robot": [(REF4, 46, "14/15", "6/10", "10/12", "10/10", "6/8", True), (REF2, 40, "15/15", "3/10", "10/12", "10/10", "2/8", True),
-              ("sparrow-nano-robot-v1.0", 40, "11/15", "10/10", "10/12", "6/10", "3/8", False), ("sparrow-nano-robot-v1.1", 38, "9/15", "10/10", "10/12", "6/10", "3/8", False),
               ("sparrow-nano-robot-v1.2", 36, "10/15", "8/10", "10/12", "6/10", "2/8", False),
               ("sparrow-nano-general-v1.1", 32, "10/15", "4/10", "9/12", "7/10", "2/8", False), ("sparrow-micro-general-v1.1", 30, "10/15", "5/10", "7/12", "6/10", "2/8", False),
               ("sparrow-small-general-v1.0", 24, "7/15", "2/10", "7/12", "5/10", "3/8", False), ("sparrow-tiny-general-v1.0", 20, "7/15", "2/10", "6/12", "3/10", "2/8", False)],
     # MASSIVE: name, domain, intent, ref
     "massive": [(REF2, "0.86", "0.871", True), ("sparrow-small-general-v1.0", "0.673", "0.599", False), ("sparrow-micro-general-v1.1", "0.635", "0.542", False),
-                ("sparrow-nano-robot-v1.0", "0.52", "0.494", False), ("sparrow-nano-robot-v1.1", "0.515", "0.485", False), ("sparrow-nano-robot-v1.2", "0.518", "0.522", False), ("sparrow-nano-general-v1.1", "0.5", "0.588", False),
+                ("sparrow-nano-robot-v1.2", "0.518", "0.522", False), ("sparrow-nano-general-v1.1", "0.5", "0.588", False),
                 ("sparrow-tiny-general-v1.0", "0.368", "0.592", False)],
     # JevBench public: name, right/231
     "jev": [("sparrow-tiny-general-v1.0", "123/231"), ("sparrow-nano-general-v1.1", "122/231"), ("sparrow-small-general-v1.0", "122/231"),
-            ("sparrow-micro-general-v1.1", "117/231"), ("sparrow-nano-robot-v1.2", "115/231"), ("sparrow-nano-robot-v1.0", "113/231"), ("sparrow-nano-robot-v1.1", "105/231")],
+            ("sparrow-micro-general-v1.1", "117/231"), ("sparrow-nano-robot-v1.2", "115/231")],
     # C runtime parity on the host: name, cases, argmax agree, max prob diff
-    "parity": [("sparrow-nano-robot-v1.1", "286", "286/286", "2e-06"), ("sparrow-nano-robot-v1.2", "286", "286/286", "2e-06"), ("sparrow-nano-general-v1.1", "286", "286/286", "1e-06"), ("sparrow-micro-general-v1.1", "586", "586/586", "3e-06")],
+    # ESP32-S3 int8 builds vs the host runtime (bench/results/esp32-*-balanced-simd.json)
+    "esp_agree": {"sparrow-nano-general-v1.1": "152/155", "sparrow-nano-robot-v1.2": "150/155"},
+    "parity": [("sparrow-nano-robot-v1.2", "286", "286/286", "2e-06"), ("sparrow-nano-general-v1.1", "286", "286/286", "1e-06"), ("sparrow-micro-general-v1.1", "586", "586/586", "3e-06")],
 }
 
 
@@ -977,9 +974,11 @@ def benchmarks():
     laptop = f'<div class="grid-2" style="align-items:start">{lap_tbl}<figure class="chart"><h3>Time per question on a laptop</h3>{lap_chart}<p class="axis-cap">Log scale. Values span 0.18 µs to 64 ms.</p></figure></div>'
     nr, ng, pico = tier("nano-robot"), tier("nano-general"), tier("pico")
     hn = F["headline_numbers"][2]
+    rb2 = next(r for r in BENCH["robot"] if r[0] == REF2)
+    rbn = next(r for r in BENCH["robot"] if r[0] == nr["id"])
     quality = f'''<div class="tiles">
-<div class="card tile"><h3>Robot decisions (RobotBench)</h3><div class="vs"><div><div class="big">40/55</div><p>sparrow-nano-robot-v1.0 (1.37 MB)</p></div><div><div class="big">40/55</div><p>public 2B Strands Decider</p></div></div><p>{E(hn["value"])} {E(hn["label"])}. nano-robot v1.1 ({E(nr["size"])}) scores 38/55.</p></div>
-<div class="card tile"><h3>Navigation from sensor numbers</h3><div class="vs"><div><div class="big">10/10</div><p>sparrow-nano-robot-v1.1</p></div><div><div class="big">3/10</div><p>public 2B Strands Decider</p></div></div><p>{E(nr["quality"])}.</p>{"".join("<p>" + E(t["id"]) + ": " + E(t["quality"]) + ".</p>" for t in F["tiers"] if "nano-robot" in t["id"] and t["id"] != nr["id"] and t.get("quality"))}</div>
+<div class="card tile"><h3>Navigation from sensor numbers</h3><div class="vs"><div><div class="big">{E(hn["value"])}</div><p>{E(nr["id"])} ({E(nr["size"])})</p></div><div><div class="big">{rb2[3].replace("/", " / ")}</div><p>public 2B Strands Decider</p></div></div><p>{E(hn["label"])}.</p></div>
+<div class="card tile"><h3>Robot decisions (RobotBench)</h3><div class="vs"><div><div class="big">{rbn[1]}/55</div><p>{E(nr["id"])}</p></div><div><div class="big">{rb2[1]}/55</div><p>public 2B Strands Decider</p></div></div><p>The 2B is broader on skills; the {E(nr["size"])} nano is better at navigation from sensor numbers. Details in the RobotBench table below.</p></div>
 <div class="card tile"><h3>pico vs its spec's rules</h3><div class="vs"><div><div class="big">94.0%</div><p>{E(pico["id"])}</p></div><div><div class="big">94.2%</div><p>its 2B teacher</p></div></div><p>{E(pico["quality"])}.</p></div>
 <div class="card tile"><h3>General text</h3><p style="margin:0">{E(ng["id"])}: {E(ng["quality"].split("; ", 1)[-1])}.</p><p>Yes/no judgement on JevBench is near chance at every tier.</p></div>
 </div>'''
@@ -1003,8 +1002,9 @@ def benchmarks():
     par = table([("Model", "sticky"), ("Cases", "r"), ("Argmax agree", "r"), ("Max prob diff", "r")],
                 [f'<tr class="ours"><td class="sticky"><span class="id">{E(r[0])}</span></td><td class="r">{r[1]}</td><td class="r">{r[2]}</td><td class="r">{r[3]}</td></tr>' for r in BENCH["parity"]],
                 "C runtime vs numpy on the host, one core. " + cite, "mid", "C runtime parity")
-    hp = F["headline_numbers"][4]
-    parity = (f'<div class="grid-2" style="align-items:start"><div class="stack"><div class="card tile"><h3>On the chip</h3><div class="big">{E(hp["value"])}</div><p>{E(hp["label"])}.</p></div>'
+    esp_rows = "".join(f'<tr class="ours"><td class="sticky"><span class="id">{E(k)}</span></td><td class="r">{E(v)}</td></tr>' for k, v in BENCH["esp_agree"].items())
+    esp_tbl = table([("Model", "sticky"), ("Same answer as host", "r")], [esp_rows], f'int8 builds on the board, 155 decisions each. Source: <code>bench/results/esp32-*</code> in the repository.', "mid", "On-chip agreement")
+    parity = (f'<div class="grid-2" style="align-items:start"><div class="stack"><div class="card tile"><h3>On the chip</h3><p style="margin:0">{E(F["parity"])}</p></div>{esp_tbl}'
               f'<div class="codebox"><div class="code-panel"><div class="bar"><span>check parity on your machine</span><button class="copy-btn" type="button" data-copy-target="par-cmd" aria-label="Copy parity command">{ICON["copy"]}<span class="label">Copy</span></button></div>'
               f'<pre class="code" tabindex="0"><code id="par-cmd">python c/tests/parity.py MODEL</code></pre></div></div></div>{par}</div>')
     method = f'''<ul class="prose" style="padding-left:20px">
@@ -1024,7 +1024,7 @@ def benchmarks():
             inpage([("chip", "On the chip"), ("faster", "How we got there"), ("laptop", "Laptop"), ("quality", "Quality"), ("robotbench", "RobotBench"),
                     ("massive", "MASSIVE"), ("jevbench", "JevBench"), ("parity", "Parity"), ("method", "Method"), ("limits", "Limits")]) +
             sec("chip", "Time per decision on an ESP32-S3", chip) +
-            sec("faster", "Every release got faster", speed_rows(), E(F["how_it_works"][3])) +
+            sec("faster", "First build to today", speed_rows(), E(F["how_it_works"][3])) +
             sec("laptop", "Speed on a laptop", laptop) +
             sec("quality", "Against the public 2B", quality) +
             sec("robotbench", "RobotBench", robot, "Robot decisions over sensor readings and commands. Released model IDs only, plus the two Strands Decider references.") +

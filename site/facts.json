@@ -30,22 +30,13 @@
     },
     {
       "tier": "nano",
-      "id": "sparrow-nano-robot-v1.1",
-      "size": "1.19 MB",
-      "input": "text with sensor readings",
-      "where": "ESP32-S3, Pi, laptop",
-      "esp32s3": "7.6 ms per decision",
-      "laptop": "0.09 ms (C)",
-      "quality": "RobotBench 38/55, navigation from sensor numbers 10/10 (public 2B: 3/10)"
-    },
-    {
-      "tier": "nano",
       "id": "sparrow-nano-robot-v1.2",
       "size": "1.11 MB",
       "input": "text with sensor readings",
       "where": "ESP32-S3, Pi, laptop",
       "esp32s3": "3.5 ms per decision",
-      "quality": "RobotBench 36/55, navigation 8/10; the fastest robot nano"
+      "quality": "RobotBench 36/55; navigation from sensor numbers 8/10 (public 2B: 3/10)",
+      "laptop": "0.08 ms (C)"
     },
     {
       "tier": "micro",
@@ -82,8 +73,8 @@
       "label": "per text decision on the same chip (sparrow-nano-general)"
     },
     {
-      "value": "40 / 55",
-      "label": "robot decisions right: a 1.37 MB nano-robot v1.0 ties the public 2-billion-parameter Strands Decider"
+      "value": "8 / 10",
+      "label": "navigation calls from sensor numbers right with a 1.11 MB nano-robot; the public 2-billion-parameter decider gets 3 / 10"
     },
     {
       "value": "numpy only",
@@ -95,9 +86,9 @@
     }
   ],
   "speedups_on_esp32s3": {
+    "pico": "42.9 µs -> 9.3 µs",
     "nano-general": "9.6 ms -> 3.8 ms",
-    "nano-robot": "73.5 ms (first run) -> 13.2 ms (v1.0) -> 7.6 ms (v1.1) -> 3.5 ms (v1.2)",
-    "pico": "42.9 µs -> 9.3 µs"
+    "nano-robot": "73.5 ms -> 3.5 ms"
   },
   "board": "ESP32-S3 (QFN56 rev0.2), 240 MHz, 16 MB flash, 8 MB PSRAM",
   "runtimes": [
@@ -146,24 +137,25 @@
       "time": "9.3 µs on ESP32-S3"
     },
     "nano": {
-      "model": "sparrow-nano-robot-v1.1",
+      "model": "sparrow-nano-robot-v1.2",
       "state": "operator: grab that blue bottle",
       "question": "Which skill should the robot run?",
       "probabilities": {
-        "pick": 0.95,
+        "pick": 0.97,
         "place": 0.01,
-        "navigate": 0.04,
+        "navigate": 0.02,
         "speak": 0.0,
         "stop": 0.0
       },
       "answer": "pick",
-      "time": "7.6 ms on ESP32-S3"
+      "time": "3.5 ms on ESP32-S3"
     }
   },
   "bundled_in_pip": [
     "sparrow-nano-general-v1.1",
-    "sparrow-nano-robot-v1.1"
+    "sparrow-nano-robot-v1.2"
   ],
   "default_branch": "main",
-  "parity": "The C runtime matches the Python runtime to within 1e-5 on the host; on the ESP32-S3, int8 builds agree with the host on 150-155 of 155 decisions."
+  "parity": "The C runtime matches the Python runtime to within 1e-5 on the host; on the ESP32-S3, int8 builds agree with the host on 150-155 of 155 decisions.",
+  "speedups_note": "First on-chip build vs today, same board. Today's nano models also use a smaller hidden layer."
 }

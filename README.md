@@ -79,8 +79,7 @@ sparrow-decider serve --port 8000                   # POST /v1/systemone
 |:--|:--|--:|:--|:--|--:|
 | **pico** | compiled per device, e.g. `sparrow-pico-rover-v1.1` | **~2 KB** / question | numbers, flags, enums | any MCU | 0.18 µs · **9.3 µs on ESP32-S3** |
 | **nano** | `sparrow-nano-general-v1.1` | 2.2 MB | text | ESP32-S3, Pi, laptop | 0.06 ms · **3.8 ms on ESP32-S3** |
-| **nano** | `sparrow-nano-robot-v1.1` | 1.19 MB | text with sensor readings | ESP32-S3, Pi, laptop | 0.09 ms · **7.6 ms on ESP32-S3** |
-| **nano** | `sparrow-nano-robot-v1.2` | 1.11 MB | text with sensor readings (fastest) | ESP32-S3, Pi, laptop | **3.5 ms on ESP32-S3** |
+| **nano** | `sparrow-nano-robot-v1.2` | 1.11 MB | text with sensor readings | ESP32-S3, Pi, laptop | 0.08 ms · **3.5 ms on ESP32-S3** |
 | **micro** | `sparrow-micro-general-v1.1` | 7.6 MB | text | Pi, laptop, 16 MB ESP32-S3 | 0.22 ms |
 | **tiny** | `sparrow-tiny-general-v1.0` | 17.9 MB | text | Pi, laptop | 23 ms |
 | **small** | `sparrow-small-general-v1.0` | 47 MB | text | Pi, laptop, Jetson | 64 ms |
@@ -96,7 +95,7 @@ flowchart LR
     Q{"Are the inputs sensor values,<br/>and the questions known at build time?"}
     Q -- yes --> P["<b>sparrow-pico</b><br/>compile a spec into C<br/>~2 KB · 9.3 µs on ESP32-S3"]
     Q -- "no: text, or questions change" --> R{"Do decisions hinge on<br/>numbers like battery: 6%?"}
-    R -- yes --> NR["<b>sparrow-nano-robot</b><br/>1.1-1.2 MB · 3.5-7.6 ms"]
+    R -- yes --> NR["<b>sparrow-nano-robot</b><br/>1.11 MB · 3.5 ms"]
     R -- no --> NG["<b>sparrow-nano-general</b><br/>2.2 MB · 3.8 ms"]
     NG -. "need more breadth,<br/>and have the RAM" .-> M["micro · tiny · small"]
 ```
@@ -112,8 +111,6 @@ devices use both: pico in the control loop, nano for anything said or written.
 <tr><th>Model</th><th align="right">Size</th><th align="right">RobotBench<br/><sub>55 robot decisions</sub></th><th align="right">MASSIVE<br/><sub>domain / intent</sub></th><th align="right">JevBench<br/><sub>231 public tasks</sub></th></tr>
 <tr><td>Strands Decider 4B v22 <sub>(teacher)</sub></td><td align="right">4B params</td><td align="right">46</td><td align="right">not run</td><td align="right">188</td></tr>
 <tr><td>Strands Decider 2B v1 <sub>(public)</sub></td><td align="right">2B params</td><td align="right">40</td><td align="right">0.86 / 0.87</td><td align="right">180</td></tr>
-<tr><td><b>sparrow-nano-robot-v1.0</b></td><td align="right">1.37 MB</td><td align="right"><b>40</b></td><td align="right">0.52 / 0.49</td><td align="right">113</td></tr>
-<tr><td><b>sparrow-nano-robot-v1.1</b></td><td align="right">1.19 MB</td><td align="right">38</td><td align="right">0.52 / 0.49</td><td align="right">105</td></tr>
 <tr><td><b>sparrow-nano-robot-v1.2</b></td><td align="right">1.11 MB</td><td align="right">36</td><td align="right">0.52 / 0.52</td><td align="right">115</td></tr>
 <tr><td><b>sparrow-nano-general-v1.1</b></td><td align="right">2.2 MB</td><td align="right">32</td><td align="right">0.50 / 0.59</td><td align="right"><b>122</b></td></tr>
 <tr><td>sparrow-micro-general-v1.1</td><td align="right">7.6 MB</td><td align="right">30</td><td align="right">0.64 / 0.54</td><td align="right">117</td></tr>
@@ -142,12 +139,11 @@ Measured on an ESP32-S3 (240 MHz, 16 MB flash, 8 MB PSRAM) with `bench/esp32/run
 decisions (RobotBench and 100 MASSIVE intent cases), and every on-chip answer was compared with the
 host runtime.
 
-| Model | p50 per decision | First version on the chip | Matches host |
+| Model | p50 per decision | First on-chip build | Matches host |
 |---|--:|--:|--:|
 | sparrow-pico-rover-v1.1 | **9.3 µs** | 42.9 µs | 256/256 |
-| sparrow-nano-general-v1.1 | **3.8 ms** | 9.6 ms (v1.0, float) | 152/155 |
-| sparrow-nano-robot-v1.2 | **3.5 ms** | 73.5 ms (v1.0, first run) | 150/155 |
-| sparrow-nano-robot-v1.1 | 7.6 ms | | 153/155 |
+| sparrow-nano-general-v1.1 | **3.8 ms** | 9.6 ms | 152/155 |
+| sparrow-nano-robot-v1.2 | **3.5 ms** | 73.5 ms | 150/155 |
 
 These speedups come from the configuration, not new hardware:
 - options scored in batches
@@ -159,9 +155,8 @@ The few mismatches against the host are int8 rounding near ties.
 
 ### What this means
 
-- **Good at:** fast, local decisions in a known domain. On robot decisions over sensor readings and
-  commands, a 1.37 MB nano (v1.0) matches the public 2B, and gets 10/10 navigation calls where the 2B
-  gets 3/10.
+- **Good at:** fast, local decisions in a known domain. On navigation from sensor readings, the 1.11 MB
+  nano-robot gets 8/10 calls right where the public 2B gets 3/10.
 - **Weak at:** open-ended language it never trained on. On MASSIVE, every Sparrow model is well
   behind the 2B.
 - **Weak at:** yes/no judgement. On JevBench's yes/no tasks, every tier is near chance. Use a full

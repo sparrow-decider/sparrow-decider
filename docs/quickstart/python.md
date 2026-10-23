@@ -41,7 +41,7 @@ There are three question types. The answers have the same shapes as
 ```python
 from sparrow_decider import Decider, available_models
 
-print(available_models())            # ['sparrow-nano-general-v1.1', 'sparrow-nano-robot-v1.1', ...]
+print(available_models())            # ['sparrow-nano-general-v1.1', 'sparrow-nano-robot-v1.2', ...]
 robot = Decider.load("nano-robot")    # names can be short
 micro = Decider.load("path/to/sparrow-micro-general-v1.1.sparrow")
 ```
