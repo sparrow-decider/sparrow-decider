@@ -3,7 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sparrow-decider/sparrow-decider/tree/main/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
+  <a href="https://pypi.org/project/sparrow-decider/"><img alt="PyPI" src="https://img.shields.io/pypi/v/sparrow-decider?color=f59e0b"></a>
+  <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
   <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="numpy only" src="https://img.shields.io/badge/deps-numpy%20only-f59e0b">
   <img alt="C99, no malloc" src="https://img.shields.io/badge/C99-no%20malloc-555">
@@ -211,7 +212,7 @@ site/brand               logo, colours (tokens.css), brand guide      site/marke
   (Apache-2.0).
 - **Evaluation only:** JevBench (MIT) and Amazon MASSIVE (CC BY 4.0).
 
-See [NOTICE](https://github.com/sparrow-decider/sparrow-decider/tree/main/NOTICE) and [docs/models.md](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/models.md). To cite, use [CITATION.cff](https://github.com/sparrow-decider/sparrow-decider/blob/main/CITATION.cff).
+See [NOTICE](https://github.com/sparrow-decider/sparrow-decider/blob/main/NOTICE) and [docs/models.md](https://github.com/sparrow-decider/sparrow-decider/blob/main/docs/models.md). To cite, use [CITATION.cff](https://github.com/sparrow-decider/sparrow-decider/blob/main/CITATION.cff).
 
 ## Contact
 
