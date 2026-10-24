@@ -178,7 +178,7 @@ the Python runtime to within 1e-5 on the host; on the ESP32-S3, int8 builds agre
 yes/no judgement on JevBench is near chance at every tier. This is for fixed-answer decisions about
 a known state, not general NLP.
 
-Repo, guides and models: https://github.com/sparrow-decider/sparrow-decider
+Site: https://sparrowdecider.com · Code: https://github.com/sparrow-decider/sparrow-decider · Models: https://huggingface.co/sparrow-decider · pip install sparrow-decider
 
 We would love numbers from other MCUs (anything with a C99 compiler should run pico), and criticism
 of the memory layout. Unofficial community project, not an AWS or Strands product.

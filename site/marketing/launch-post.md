@@ -96,7 +96,7 @@ sparrow-decider ask "operator: grab that blue bottle" --choice "Which skill?" \
 ```
 
 The guides cover Python, agents, ESP32-S3 (with QEMU if you have no board), sparrow-pico and the C library.
-Models are on the GitHub releases page: https://github.com/sparrow-decider/sparrow-decider
+Install with `pip install sparrow-decider` (https://pypi.org/project/sparrow-decider/). Models are on Hugging Face (https://huggingface.co/sparrow-decider), code at https://github.com/sparrow-decider/sparrow-decider, and the site is https://sparrowdecider.com.
 
 Questions, results on your hardware, and bug reports are welcome in
 [Discussions](https://github.com/sparrow-decider/sparrow-decider/discussions) and
