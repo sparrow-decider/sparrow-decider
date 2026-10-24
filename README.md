@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://huggingface.co/sparrow-decider"><img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97-models-ffcc4d"></a>
   <a href="https://pypi.org/project/sparrow-decider/"><img alt="PyPI" src="https://img.shields.io/pypi/v/sparrow-decider?color=f59e0b"></a>
   <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
   <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
@@ -87,8 +88,7 @@ sparrow-decider serve --port 8000                   # POST /v1/systemone
 | **small** | `sparrow-small-general-v1.0` | 47 MB | text | Pi, laptop, Jetson | 64 ms |
 
 <sub>Times are p50 on one Apple M4 Pro core: the C runtime for pico, nano and micro, numpy for tiny and
-small. The nanos are bundled with the Python package; the others are on the
-<a href="https://github.com/sparrow-decider/sparrow-decider/releases">releases page</a>. IDs follow <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/NAMING.md">NAMING.md</a>.</sub>
+small. The nanos are bundled with the Python package; the others are on <a href="https://huggingface.co/sparrow-decider">Hugging Face</a> and the <a href="https://github.com/sparrow-decider/sparrow-decider/releases">releases page</a>. IDs follow <a href="https://github.com/sparrow-decider/sparrow-decider/blob/main/NAMING.md">NAMING.md</a>.</sub>
 
 ### pico or nano?
 

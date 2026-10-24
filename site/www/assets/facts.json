@@ -158,5 +158,7 @@
   ],
   "default_branch": "main",
   "parity": "The C runtime matches the Python runtime to within 1e-5 on the host; on the ESP32-S3, int8 builds agree with the host on 150-155 of 155 decisions.",
-  "speedups_note": "First on-chip build vs today, same board. Today's nano models also use a smaller hidden layer."
+  "speedups_note": "First on-chip build vs today, same board. Today's nano models also use a smaller hidden layer.",
+  "pypi": "https://pypi.org/project/sparrow-decider/",
+  "huggingface": "https://huggingface.co/sparrow-decider"
 }

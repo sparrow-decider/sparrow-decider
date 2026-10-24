@@ -26,6 +26,8 @@ BR = F.get("default_branch", "main")
 L = {
     "repo": REPO,
     "releases": REPO + "/releases",
+    "hub": F["huggingface"],
+    "pypi": F["pypi"],
     "docs": REPO + "/tree/" + BR + "/docs/quickstart",
     "python": REPO + "/blob/" + BR + "/docs/quickstart/python.md",
     "agents": REPO + "/blob/" + BR + "/docs/quickstart/agents.md",
@@ -43,6 +45,11 @@ L = {
     "discussions": F["contact"]["discussions"],
 }
 E = html.escape
+
+
+def hf(model_id):
+    """Hugging Face repo for a model ID: repos carry no version suffix (sparrow-nano-general-v1.1 -> sparrow-nano-general)."""
+    return F["huggingface"] + "/" + re.sub(r"-v\d+(\.\d+)*$", "", model_id)
 
 
 # ---------------------------------------------------------------- helpers
@@ -303,7 +310,7 @@ def header(root, current):
     <div class="main-links">{sheet_links}</div>
     <div class="sub">
       <a href="{L["docs"]}">Read the docs{ICON["ext"]}</a>
-      <a href="{L["releases"]}">Download models{ICON["ext"]}</a>
+      <a href="{L["hub"]}">Download models{ICON["ext"]}</a>
       <a href="{L["repo"]}">View on GitHub{ICON["ext"]}</a>
     </div>
     {copy_block()}
@@ -327,14 +334,14 @@ def footer(root):
       </div>
       <div class="f-col"><h2>Product</h2><ul>
         <li><a href="{root}models/">Models</a></li><li><a href="{root}architecture/">Architecture</a></li>
-        <li><a href="{root}benchmarks/">Benchmarks</a></li><li><a href="{L["releases"]}">Download models{ICON["ext"]}</a></li></ul></div>
+        <li><a href="{root}benchmarks/">Benchmarks</a></li><li><a href="{L["hub"]}">Download models{ICON["ext"]}</a></li></ul></div>
       <div class="f-col"><h2>Developers</h2><ul>
         <li><a href="{L["docs"]}">Read the docs{ICON["ext"]}</a></li><li><a href="{L["python"]}">Python{ICON["ext"]}</a></li>
         <li><a href="{L["esp32"]}">ESP32-S3{ICON["ext"]}</a></li><li><a href="{L["pico"]}">sparrow-pico{ICON["ext"]}</a></li>
         <li><a href="{L["c"]}">C library{ICON["ext"]}</a></li></ul></div>
       <div class="f-col"><h2>Community</h2><ul>
         <li><a href="{L["repo"]}">GitHub{ICON["ext"]}</a></li><li><a href="{L["discussions"]}">Discussions{ICON["ext"]}</a></li>
-        <li><a href="{L["issues"]}">Report an issue{ICON["ext"]}</a></li><li><a href="{root}contact/">Contact</a></li><li><a href="mailto:{F["contact"]["email"]}">{E(F["contact"]["email"])}</a></li></ul></div>
+        <li><a href="{L["hub"]}">Hugging Face{ICON["ext"]}</a></li><li><a href="{L["pypi"]}">PyPI{ICON["ext"]}</a></li><li><a href="{L["issues"]}">Report an issue{ICON["ext"]}</a></li><li><a href="{root}contact/">Contact</a></li><li><a href="mailto:{F["contact"]["email"]}">{E(F["contact"]["email"])}</a></li></ul></div>
     </div>
     <div class="legal">
       <p class="disc">{E(F["disclaimer"])}</p>
@@ -390,7 +397,7 @@ def default_actions(t):
         return ext_link(L["pico"], "Read the pico guide")
     if t["tier"] == "nano":
         return ext_link(L["python"], "Use from Python")
-    return ext_link(L["releases"], "Download")
+    return ext_link(hf(t["id"]), "Download")
 
 
 def speed_rows(cls_extra=""):
@@ -515,7 +522,7 @@ def home():
       <p class="lede">Tiny decision models for agents, robots and microcontrollers. From 47 MB on a laptop to ~2 KB on a chip, with calibrated answers in the same shapes as Strands Decider.</p>
       {copy_block("copy copy-lg")}
       <div class="btn-row">
-        <a class="btn btn-primary" href="{L["releases"]}">{ICON["download"]}Download models</a>
+        <a class="btn btn-primary" href="{L["hub"]}">{ICON["download"]}Download models</a>
         <a class="btn btn-ghost" href="{L["repo"]}">{ICON["github"]}View on GitHub</a>
         <a class="text-link" href="{L["docs"]}">Read the docs {ARR}</a>
       </div>
@@ -690,7 +697,7 @@ def home():
     <p class="sub">Install in one line, or flash a model to a $10 board.</p>
     {copy_block("copy copy-lg")}
     <div class="btn-row">
-      <a class="btn btn-primary" href="{L["releases"]}">{ICON["download"]}Download models</a>
+      <a class="btn btn-primary" href="{L["hub"]}">{ICON["download"]}Download models</a>
       <a class="btn btn-ghost" href="{L["repo"]}">{ICON["github"]}View on GitHub</a>
       <a class="btn btn-ghost" href="{L["docs"]}">Read the docs</a>
     </div>
@@ -733,13 +740,13 @@ def models():
     }
     acts = {
         pico["id"]: ext_link(L["pico"], "Read the pico guide"),
-        ng["id"]: ext_link(L["esp32"], "Read the ESP32-S3 guide") + ext_link(L["releases"], "Download"),
-        nr["id"]: ext_link(L["esp32"], "Read the robot guide") + ext_link(L["releases"], "Download"),
+        ng["id"]: ext_link(L["esp32"], "Read the ESP32-S3 guide") + ext_link(hf(ng["id"]), "Download"),
+        nr["id"]: ext_link(L["esp32"], "Read the robot guide") + ext_link(hf(nr["id"]), "Download"),
     }
     for t in F["tiers"]:
-        acts.setdefault(t["id"], ext_link(L["esp32"], "Read the ESP32-S3 guide") + ext_link(L["releases"], "Download") if t["tier"] == "nano" else None)
+        acts.setdefault(t["id"], ext_link(L["esp32"], "Read the ESP32-S3 guide") + ext_link(hf(t["id"]), "Download") if t["tier"] == "nano" else None)
     cards = "".join(model_card(t, root, bodies.get(t["id"], "More room, more reach: a text model for a Raspberry Pi, a laptop or a Jetson."),
-                               acts.get(t["id"]) or (ext_link(L["python"], "Read the Python guide") + ext_link(L["releases"], "Download"))) for t in order)
+                               acts.get(t["id"]) or (ext_link(L["python"], "Read the Python guide") + ext_link(hf(t["id"]), "Download"))) for t in order)
     rows = []
     for t in F["tiers"]:
         rows.append(f'<tr class="ours"><td>{t["tier"]}</td><td class="sticky"><span class="id">{E(t["id"])}</span></td><td>{E(t["size"])}</td><td>{E(t["input"])}</td><td>{E(t["where"])}</td>'
@@ -754,7 +761,7 @@ def models():
     bundled = " and ".join(f"<code>{E(b)}</code>" for b in F.get("bundled_in_pip", []))
     dl = f'''<div class="grid-3">
 <div class="card"><span class="eyebrow">pip</span><h3 style="font-size:20px">nano, bundled</h3><p class="muted" style="margin:10px 0 16px">numpy only. The package bundles {bundled}; load them with <code>Decider.load()</code>.</p>{copy_block()}<p style="margin:10px 0 0">{ext_link(L["python"], "Python guide")}</p></div>
-<div class="card"><span class="eyebrow">GitHub releases</span><h3 style="font-size:20px">micro, tiny, small</h3><p class="muted" style="margin:10px 0 16px">Put the <code>.sparrow</code> files in <code>~/.cache/sparrow-decider/</code> (or any folder in <code>$SPARROW_MODELS</code>) to load them by name.</p><a class="btn btn-primary" href="{L["releases"]}">{ICON["download"]}Download models</a></div>
+<div class="card"><span class="eyebrow">Hugging Face</span><h3 style="font-size:20px">micro, tiny, small</h3><p class="muted" style="margin:10px 0 16px">Put the <code>.sparrow</code> files in <code>~/.cache/sparrow-decider/</code> (or any folder in <code>$SPARROW_MODELS</code>) to load them by name.</p><a class="btn btn-primary" href="{L["hub"]}">{ICON["download"]}Download models</a></div>
 <div class="card"><span class="eyebrow">Compile</span><h3 style="font-size:20px">pico</h3><p class="muted" style="margin:10px 0 16px">pico models are compiled for your device from a spec.</p><p style="margin:0">{ext_link(L["pico"], "sparrow-pico guide")}</p><p style="margin:0">{ext_link(L["c"], "C runtime and ESP-IDF component")}</p></div>
 </div>'''
     mc = f'''<div class="grid-2" style="align-items:start">

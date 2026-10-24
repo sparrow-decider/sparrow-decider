@@ -47,9 +47,14 @@ micro = Decider.load("path/to/sparrow-micro-general-v1.1.sparrow")
 ```
 
 - **Bundled models:** the two nano models.
-- **Larger models:** micro, tiny and small are attached to the GitHub releases. Put the `.sparrow`
-  files in `~/.cache/sparrow-decider/` (or any folder listed in `$SPARROW_MODELS`) to load them by
-  name.
+- **Larger models:** micro, tiny and small are on Hugging Face (https://huggingface.co/sparrow-decider)
+  and the GitHub releases. Put the `.sparrow` files in `~/.cache/sparrow-decider/` (or any folder
+  listed in `$SPARROW_MODELS`) to load them by name:
+
+  ```bash
+  pip install huggingface_hub
+  hf download sparrow-decider/sparrow-micro-general sparrow-micro-general-v1.1.sparrow --local-dir ~/.cache/sparrow-decider
+  ```
 
 | Need | Model |
 |---|---|
